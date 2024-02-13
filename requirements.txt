@@ -34,6 +34,7 @@ pillow==10.2.0
 pipenv==2023.10.24
 platformdirs==3.11.0
 psycopg2==2.9.9
+psycopg2-binary==2.9.9
 PyJWT==2.8.0
 python-dateutil==2.8.2
 python-decouple==3.8
