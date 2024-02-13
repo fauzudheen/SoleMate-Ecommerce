@@ -1,0 +1,285 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Dashboard{% endblock %}
+
+{% block style %}
+
+
+{% endblock %}
+
+{% block content %}
+
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h2 class="page-title"> Dashboard </h2>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item"><a href="#">Admin Home</a></li>
+                  <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                </ol>
+              </nav>
+            </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-12 grid-margin stretch-card">
+                    <div class="card" style="width:600px;">
+                      <div class="card-body" style="border-radius: 10px; background-color: #f8f9fa; padding: 20px;">
+                        <h4 class="card-title" style=" padding: 10px; background-color: #343a40; color: white; margin-top: 0; border-top-left-radius: 10px; border-top-right-radius: 10px;">Sales Report</h4>
+                        <div>
+                            <form id="dateForm" class="mb-2">
+                              <label for="from_date" class="mx-2">From:</label>
+                              <input type="date" class="p-1 rounded bg-gradient-light border" id="from_date" name="from_date">
+                              
+                              <label for="to_date" class="mx-2">To:</label>
+                              <input type="date" class="p-1 rounded bg-gradient-light border" id="to_date" name="to_date">
+                              
+                              <button id="submitBtn" class="mx-5 p-1 px-2 btn-sm rounded bg-gradient-success border text-white">Submit</button>
+                              <a href="{% url 'AdminHome:home' %}"><button class="p-1 px-2 btn-sm rounded bg-gradient-warning border text-white">Clear</button></a>
+                           </form>
+                            <select id="report-type" class="form-control" style="border-radius: 5px; padding: 8px 12px; width: 100%;">
+                                <option value="" disabled selected>Select an option</option>
+                                <option value="today">Today</option>
+                                <option value="this-week">This Week</option>
+                                <option value="this-month">This Month</option>
+                            </select>
+                        </div>
+                        <div id="sales-report-container" style="background-color: white; padding: 20px; border-radius: 0 0 10px 10px;"></div>
+                     </div>
+                     <form id="printReportForm" method="POST" action="{% url 'AdminHome:print_sales_report' %}">
+                      {% csrf_token %}
+                      <input type="hidden" id="salesReportHTML" name="sales_report_html" value="">
+                      
+                    </form> 
+                    </div>
+                  </div>
+                </div>
+
+
+                <div id="filtered-order-items" class="">
+                    <div class="row">
+                      <div class="col-lg-4 stretch-card grid-margin">
+                          <div class="card bg-gradient-danger card-img-holder text-white">
+                              <a href="{% url 'AdminHome:daily_sales_page' %}" class="text-decoration-none text-white">
+                                  <div class="card-body">
+                                      <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                      <h4 class="font-weight-normal mb-3">Daily Sales Chart<i class="mdi mdi-chart-line mdi-24px float-right"></i></h4>
+                                  </div>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="col-lg-4 stretch-card grid-margin">
+                          <div class="card bg-gradient-info card-img-holder text-white">
+                              <a href="{% url 'AdminHome:weekly_sales_page' %}" class="text-decoration-none text-white">
+                                  <div class="card-body">
+                                      <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                      <h4 class="font-weight-normal mb-3">Weekly Sales Chart<i class="mdi mdi-chart-line-stacked mdi-24px float-right"></i></h4>
+                                  </div>
+                              </a>
+                          </div>
+                      </div>
+                      <div class="col-lg-4 stretch-card grid-margin">
+                          <div class="card bg-gradient-success card-img-holder text-white">
+                              <a href="{% url 'AdminHome:monthly_sales_page' %}" class="text-decoration-none text-white">
+                                  <div class="card-body">
+                                      <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                      <h4 class="font-weight-normal mb-3">Monthly Sales Chart<i class="mdi mdi-chart-bar-stacked mdi-24px float-right"></i></h4>
+                                  </div>
+                              </a>
+                          </div>
+                      </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 stretch-card grid-margin">
+                            <div class="card mb-3 bg-gradient-primary card-img-holder text-white">
+                                <div class="card-body">
+                                    <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                    <h4 class="font-weight-normal mb-3"><i class="mdi mdi-shopping mdi-22px mx-3 float-left"></i>Top 3 Products-(orders):</h4>
+                                    <ul>
+                                        {% for product in data.top_three_products %}
+                                            <li>{{ product.product__name }} - {{ product.total_orders }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 stretch-card grid-margin">
+                            <div class="card mb-3 bg-gradient-primary card-img-holder text-white">
+                                <div class="card-body">
+                                    <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                    <h4 class="font-weight-normal mb-3"><i class="mdi mdi-folder mdi-22px mx-2 float-left"></i>Top 3 Categories-(orders):</h4>
+                                    <ul>
+                                        {% for category in data.top_three_categories %}
+                                            <li>{{ category.product__category__name }} - {{ category.total_orders }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 stretch-card grid-margin">
+                            <div class="card mb-3 bg-gradient-primary card-img-holder text-white">
+                                <div class="card-body">
+                                    <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                    <h4 class="font-weight-normal mb-3"><i class="mdi mdi-label mdi-23px mx-3 float-left"></i>Top 3 Brands-(orders):</h4>
+                                    <ul>
+                                        {% for brand in data.top_three_brands %}
+                                            <li>{{ brand.product__brand__name }} - {{ brand.total_orders }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4 stretch-card grid-margin">
+                            <div class="card bg-gradient-light card-img-holder">
+                                <div class="card-body">
+                                    <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                    <h4 class="font-weight-normal mb-3">Total Revenue<i class="mdi mdi-currency-usd mdi-24px float-right"></i></h4>
+                                    <h4>₹{{ data.total_revenue }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 stretch-card grid-margin">
+                            <div class="card bg-gradient-light card-img-holder">
+                                <div class="card-body">
+                                    <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                    <h4 class="font-weight-normal mb-3">Users<i class="mdi mdi-account-group mdi-24px float-right"></i></h4>
+                                    <h4>{{ data.total_users }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 stretch-card grid-margin">
+                            <div class="card bg-gradient-light card-img-holder">
+                                <div class="card-body">
+                                    <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                    <h4 class="font-weight-normal mb-3">Products<i class="mdi mdi-package-variant mdi-24px float-right"></i></h4>
+                                    <h4>{{ data.total_products }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+              
+                 
+                    <div class="row">
+                        <div class="col-md-4 stretch-card grid-margin">
+                            <div class="card mb-3 bg-gradient-warning card-img-holder">
+                                <div class="card-body">
+                                    <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                    <h4 class="font-weight-normal mb-3"><i class="mdi mdi-clipboard-text-outline mdi-22px mx-3 float-left"></i>Total Orders:  {{ data.total_orders }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 stretch-card grid-margin">
+                            <div class="card mb-3 bg-gradient-warning card-img-holder">
+                                <div class="card-body">
+                                    <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                    <h4 class="font-weight-normal mb-3"><i class="mdi mdi-checkbox-marked-circle-outline mdi-22px mx-2 float-left"></i>Orders Completed:  {{ data.orders_completed }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 stretch-card grid-margin">
+                            <div class="card mb-3 bg-gradient-warning card-img-holder">
+                                <div class="card-body">
+                                    <img src="{% static 'Admin/assets/images/dashboard/circle.svg' %}" class="card-img-absolute" alt="circle-image" />
+                                    <h4 class="font-weight-normal mb-3"><i class="mdi mdi-timer-sand mdi-23px mx-3 float-left"></i>Orders Pending:  {{ data.orders_pending }}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+             
+                    
+
+
+                </div>
+
+                
+                 </div>
+               </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    {% endblock %}
+
+    {% block script %}
+    <script>
+      $(document).ready(function() {
+          $('#report-type').change(function() {
+              var selectedOption = $(this).val();
+              console.log(selectedOption)
+              $.ajax({
+                  url: "{% url 'AdminHome:sales_report_view' %}",
+                  type: 'GET',
+                  data: {
+                      report_type: selectedOption
+                  },
+                  success: function(response) {                    
+                  
+                  console.log("Data filtered successfully");
+					$("#filtered-order-items").html(response.data)
+                  
+                  },
+                  
+                  error: function(xhr, status, error) {
+                      console.error(xhr.responseText);
+                  }
+              });
+          });
+      });
+  </script>
+
+  <script>
+    $(document).ready(function(){
+      $('#submitBtn').click(function(e){
+        e.preventDefault();
+
+        var from_date = $('#from_date').val();
+        var to_date = $('#to_date').val();
+
+        var form_data = {
+          'from_date' : from_date,
+          'to_date' : to_date,
+        };
+
+        $.ajax({
+          type: "POST",
+          url: '{% url "AdminHome:sales_from_to" %}',
+          data: JSON.stringify(form_data),
+          contentType: "application/JSON",
+          headers: { "X-CSRFToken": "{{ csrf_token }}" },
+          success: function(response){
+            $("#filtered-order-items").html(response.data)
+          },
+          error: function(response){
+            console.error("Request failed with status:", status);
+          }
+        });
+      });
+    });
+  </script>
+
+  <script>
+    $(document).ready(function() {
+      $('#printReportBtn').click(function() {
+          var salesReportHTML = $('#sales-report-container').html();
+  
+          // Create a hidden form field or hidden element to store the HTML content
+          $('#salesReportHTML').val(salesReportHTML);
+  
+          // Submit the form containing the HTML content to the server for rendering
+          $('#printReportForm').submit();
+      });
+  });
+  
+  </script>
+
+  
+    {% endblock %}

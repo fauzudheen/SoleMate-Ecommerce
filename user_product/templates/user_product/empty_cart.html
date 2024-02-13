@@ -1,0 +1,98 @@
+{% extends 'UserHome/base.html' %}
+
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Shop Cart</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Shop</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Shop Cart</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<div class="shop-cart">
+							<div class="row">
+								<div class="col-12 d-flex justify-content-center align-items-center">
+									<div class="shop-cart-list">
+										<h3>Your Cart us empty !</h3>
+									</div>
+								</div>
+							</div>
+							<!--end row-->
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+
+
+		<!-- ---Update quantity AJAX--- -->
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				var quantityInputs = document.querySelectorAll('.quantity-input input');
+		
+				quantityInputs.forEach(function (input) {
+					input.addEventListener('change', function (event) {
+						var row = event.target.closest('.cart-action');
+						var itemId = this.getAttribute('data-item-id');
+						var newQuantity = event.target.value;
+		
+						updateQuantity(row, itemId, newQuantity);
+					});
+				});
+		
+				function updateQuantity(row, itemId, newQuantity) {
+					$.ajax({
+						url: '{% url "user_product:update_cart_item_quantity" %}',
+						method: 'POST',
+						data: {
+							'item_id': itemId,
+							'new_quantity': newQuantity,
+							csrfmiddlewaretoken: '{{ csrf_token }}'
+						},
+						success: function (data) {
+							if (data.status === 'success') {
+								// Update the DOM with the updated subtotal within the specific row
+								var subtotalElement = row.querySelector('.subtotal .fw-bold');
+								subtotalElement.textContent = '₹' + data.updated_subtotal;
+		
+								console.log('Quantity updated successfully');
+							} else {
+								// Handle error, if needed
+								console.log('Error updating quantity');
+							}
+						},
+						error: function () {
+							// Handle error, if needed
+							console.log('Error updating quantity');
+						}
+					});
+				}
+		
+			});
+		
+		</script>
+		
+		
+		
+		{% endblock %}

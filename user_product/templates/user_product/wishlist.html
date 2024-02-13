@@ -1,0 +1,85 @@
+{% extends 'UserHome/base.html' %}
+{% block title %}Wishlist{% endblock %}
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Wishlist Grid</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Wishlist</a>
+										</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start Featured product-->
+				<section class="py-4">
+					<div class="container">
+						<div class="product-grid">
+							<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-5 g-4">
+								{% for wishlist_item in wishlist_items %}
+								<div class="col wishlist-item">
+									<div class="card rounded border">
+										<div class="image-wrapper" style="width: 200px; height: 120px; overflow: hidden;">
+											<a href="{% url 'product_details' wishlist_item.product.id %}">
+												<img src="{{ wishlist_item.product.thumbnail.url }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: contain; background-color: white;" alt="{{ product.thumbnail.url }}">
+											</a>
+										</div>
+										<div class="card-body">
+											<div class="product-info">
+												<a href="{% url 'product_details' wishlist_item.product.id %}" style="font-size: 13px;" class="mb-1 product-short-name text-secondary fw-bold">
+													{{ wishlist_item.product.brand|upper }}
+												</a>
+												
+												<a href="{% url 'product_details' wishlist_item.product.id %}">
+													<h6 class="product-name mb-2" style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+														title="{{ wishlist_item.product.name }}">{{ wishlist_item.product.name }}</h6>
+												</a>
+												
+												<div class="d-flex flex-column justify-content-center">
+													<div class="mb-1 product-price">	
+														{% if wishlist_item.product.offer %}
+															<span class="h6 fw-bold" style="font-size: 14px;">₹{{ wishlist_item.product.display_price }}</span>
+															<span class="h6 fw-light fw-bold text-secondary text-decoration-line-through" style="font-size: 12px;">{{ wishlist_item.product.price }}</span>
+															<span class="h6 fw-light fw-bold text-success ms-3" style="font-size: 12px;">{{ wishlist_item.product.offer.percent }}% off</span>
+														{% else %}
+															<span class="h6 fw-bold" style="font-size: 14px;">₹{{ wishlist_item.product.price }}</span>
+														{% endif %}
+													</div>
+												</div>
+												<div class="product-action mt-2">
+													<div class="d-grid gap-2">
+														<a style="font-size: 13px;" href="{% url 'user_product:remove_from_wishlist' wishlist_item.id %}" class="remove-from-wishlist-link btn btn-danger rounded fw-bold"><i class='bx bx-zoom-out'></i>Remove</a>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+							<!--end row-->
+						</div>
+					</div>
+				</section>
+				<!--end Featured product-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+{% endblock %}
+
+{% block script %}
+
+
+{% endblock %}

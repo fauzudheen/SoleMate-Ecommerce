@@ -1,0 +1,88 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Orders{% endblock %}
+
+{% block content %}
+<div class="main-panel">
+  <div class="content-wrapper">
+      <div class="page-header">
+          <h2>Orders</h2>
+          <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+              <li class="breadcrumb-item"><a href="#">Order Management</a></li>
+            </ol>
+          </nav>
+      </div>
+      <div class="row">
+          <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                  <div class="card-body">
+                      <h4 class="card-title">User Orders</h4>
+                      <div class="table-responsive">
+                          <table class="table">
+                              <thead>
+                                  <tr>
+                                    <th>SL</th>
+                                      <th>Order Date</th>
+                                      <th>User</th>
+                                      <th>Total Amount</th>
+                                      <th>Address</th>
+                                      <th class="text-center">Action</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  {% for order in orders %}
+                                  <tr>
+                                    <td>{{ orders.start_index|add:forloop.counter0 }}</td>
+                                      <td>{{ order.order_date }}</td>
+                                      <td>{{ order.user }}</td>
+                                      <td>₹{{ order.total_amount }}</td>
+                                      <td>
+                                          {{ order.address.full_name }}<br>
+                                          {{ order.address.street_address }}<br>
+                                          {{ order.address.city }}, {{ order.address.district }}, {{ order.address.state }} - {{ order.address.pincode }}
+                                      </td>
+                                      <td class="text-center">
+                                          <a href="{% url 'admin_order:view_order' order.id %}" class="btn btn-gradient-primary btn-sm mx-2">View</a>
+                                          <a href="" class="btn btn-gradient-dark btn-sm ">Cancel</a>
+                                      </td>
+                                  </tr>
+                                  {% endfor %}
+                              </tbody>
+                          </table>
+                      </div>
+                      <!-- Pagination -->
+                      <nav aria-label="Page navigation">
+                          <ul class="pagination justify-content-center">
+                              {% if orders.has_previous %}
+                                  <li class="page-item">
+                                      <a class="page-link" href="?page=1">&laquo;</a>
+                                  </li>
+                                  <li class="page-item">
+                                      <a class="page-link" href="?page={{ orders.previous_page_number }}">{{ orders.previous_page_number }}</a>
+                                  </li>
+                              {% endif %}
+                              <li class="page-item active">
+                                  <a class="page-link" href="?page={{ orders.number }}">{{ orders.number }}</a>
+                              </li>
+                              {% if orders.has_next %}
+                                  <li class="page-item">
+                                      <a class="page-link" href="?page={{ orders.next_page_number }}">{{ orders.next_page_number }}</a>
+                                  </li>
+                                  <li class="page-item">
+                                      <a class="page-link" href="?page={{ orders.paginator.num_pages }}">&raquo;</a>
+                                  </li>
+                              {% endif %}
+                          </ul>
+                      </nav>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>
+
+
+
+{% endblock %}

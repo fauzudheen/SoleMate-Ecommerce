@@ -1,0 +1,196 @@
+<style>
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+        
+    }
+    
+    .table th,
+    .table td {
+        border: 1px solid #5050503f; /* Border color */
+        padding: 15px;
+        text-align: left;
+    }
+    
+    .table th {
+        background-color: #a0c9ea; /* Header background color */
+    }
+    
+    .product-name {
+        max-width: 150px; /* Adjust as needed */
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
+<div id="tableData">
+    <div class="table-responsive bg-white" style="overflow-x: hidden; max-width: 100%;">
+        <table class="table" border="1" style="border-color: #5050503f; border-radius: 18px; table-layout: fixed; width: 100%;">
+            <thead class="bordered">
+                <tr class="bordered">
+                    <th style="width: 50px;">Sl No</th>
+                    <th>Product</th>
+                    <th>Order Date</th>
+                    <th>Customer</th>
+                    <th>Variant</th>
+                    <th>Quantity</th>
+                    <th>Sub Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for order_item in order_items %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                        <div class="product-name">{{ order_item.product }}</div>
+                    </td>
+                    <td>{{ order_item.order.order_date }}</td>
+                    <td>{{ order_item.order.user }}</td>
+                    <td>{{ order_item.product_variant }}</td>
+                    <td>{{ order_item.quantity }}</td>
+                    <td>{{ order_item.sub_total }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="6" style="text-align: right;">Total :</td>
+                    <td id="total-subtotal">{{ sales_report_data.revenue }}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    
+    
+    <div class="sales-report mt-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <p class="report-heading bg-gradient-light p-2 border border-dark rounded">Items Sold: <span class="report-value text-info" style="font-size: 16px; font-weight: medium;">{{ sales_report_data.items_sold }}</span></p>
+            </div>
+            <div class="col-lg-6">
+                <p class="report-heading bg-gradient-light p-2 border border-dark rounded">Total Revenue: <span class="report-value text-info" style="font-size: 16px; font-weight: medium;">₹{{ sales_report_data.revenue }}</span></p>        </div>
+            </div>
+        </div>
+        
+        
+        {% if sales_report_data.best_selling_product %}
+            <div class="row bg-gradient-light p-2 mx-0 mt-2 border border-dark rounded">
+                <p class="col-lg-6">Best Selling Product: <span class="item-name  text-info" style="font-size: 16px; font-weight: medium;">{{ sales_report_data.best_selling_product.product_name }}</span></p>
+                <p class="col-lg-6">Quantity Sold: <span class="item-name text-info" style="font-size: 16px; font-weight: medium;">{{ sales_report_data.best_selling_product.quantity_sold }}</p>
+            </div>
+        {% else %}
+            <p class="report-message">No best selling item found</p>
+        {% endif %}
+    </div>
+    
+</div>
+
+<div class="text-center mt-4">
+    <button id="printPdfReportBtn" class="btn btn-sm mx-1 text-white" style="width: 130px; background:rgb(244, 15, 2)">
+        <i class="mdi mdi-file-pdf"></i> Print PDF
+    </button>
+    <button id="exportExcelBtn" class="btn btn-sm mx-1 text-white" style="width: 130px; background:rgb(29, 111, 66)">
+        <i class="mdi mdi-file-excel"></i> Export Excel
+    </button>
+</div>
+
+
+
+<script>
+    $(document).ready(function() {
+        $('#exportExcelBtn').click(function() {
+            var tableData = $('#tableData').html();
+            
+            $.ajax({
+                url: '{% url "AdminHome:generate_excel" %}',
+                type: 'POST',
+                data: {
+                    table_data: tableData
+                },
+                success: function(response) {
+                    // Create a Blob from the response data
+                    var blob = new Blob([response], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+                    
+                    // Check for IE compatibility
+                    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveOrOpenBlob(blob, 'my_excel_file.xlsx');
+                    } else {
+                        // Create a download URL for the Blob
+                        var url = window.URL.createObjectURL(blob);
+                        
+                        // Create a temporary <a> element to trigger the download
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'my_excel_file.xlsx';
+                        document.body.appendChild(a);
+                        
+                        // Click the <a> element to start the download
+                        a.click();
+                        
+                        // Cleanup: remove the <a> element and revoke the Blob URL
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }
+                    
+                    // Display success message
+                },
+                
+                error: function(xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                }
+            });
+        });
+    });
+    
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#printPdfReportBtn').click(function() {
+
+            var tableData = $('#tableData').html();
+            
+            $.ajax({
+                url: '{% url "AdminHome:generate_pdf" %}',
+                type: 'POST',
+                data: {
+                    table_data: tableData
+                },
+                success: function(response) {
+                    // Create a Blob from the response data
+                    var blob = new Blob([response], { type: 'application/pdf' });
+                    
+                    // Check for IE compatibility
+                    if (window.navigator && window.navigator.msSaveOrOpenBlob) {
+                        window.navigator.msSaveOrOpenBlob(blob, 'my_pdf_file.pdf');
+                    } else {
+                        // Create a download URL for the Blob
+                        var url = window.URL.createObjectURL(blob);
+                        
+                        // Create a temporary <a> element to trigger the download
+                        var a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'my_pdf_file.pdf';
+                        document.body.appendChild(a);
+                        
+                        // Click the <a> element to start the download
+                        a.click();
+                        
+                        // Cleanup: remove the <a> element and revoke the Blob URL
+                        document.body.removeChild(a);
+                        window.URL.revokeObjectURL(url);
+                    }
+                    
+                    // Display success message or perform any other actions
+                },
+                
+                error: function(xhr, errmsg, err) {
+                    console.log(xhr.status + ": " + xhr.responseText);
+                    // Handle error case
+                }
+            });
+        });
+    });
+    
+</script>

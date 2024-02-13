@@ -1,0 +1,341 @@
+{% extends 'UserHome/base.html' %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block style %}
+<style>
+	.MultiCarousel { float: left; overflow: hidden; padding: 15px; width: 100%; position:relative; }
+    .MultiCarousel .MultiCarousel-inner { transition: 1s ease all; float: left; }
+    .MultiCarousel .MultiCarousel-inner .item { float: left;}
+    .MultiCarousel .MultiCarousel-inner .item > div { text-align: center; padding:0px; margin:10px; background:#f1f1f1; color:#000000;}
+    .MultiCarousel .leftLst, .MultiCarousel .rightLst { position:absolute; border-radius:50%;top:calc(50% - 20px); }
+    .MultiCarousel .leftLst { left:0; }
+    .MultiCarousel .rightLst { right:0; }
+    .MultiCarousel .leftLst.over, .MultiCarousel .rightLst.over { pointer-events: none; background:#ccc; }
+</style>	
+{% endblock %}
+
+{% block head %}
+	<!-- Slick Carousel CSS -->
+<link rel="stylesheet" type="text/css" href="{% static 'path/to/slick/slick.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'path/to/slick/slick-theme.css' %}">
+
+<!-- Slick Carousel JS -->
+<script src="{% static 'path/to/slick/slick.min.js' %}"></script>
+
+{% endblock %}
+{% block content %}
+
+		<!--start carousel-->
+		<div id="myCarousel" class="carousel slide" data-bs-ride="carousel" style="width: 100%; max-width: 100%; height: 20%; overflow: hidden;">
+			<div class="carousel-inner" style="width: 100%; height: 20%;">
+				{% for banner in banners %}
+				{% if forloop.counter0 == 0 %}
+				<div class="carousel-item active" style="width: 100%; height: 20%;">
+					{% else %}
+					<div class="carousel-item" style="width: 100%; height: 20%;">
+					{% endif %}
+					<img src="{{ banner.image.url }}" class="d-block mx-auto h-100" alt="{{ banner.image.url }}" style="max-width: 100%; max-height: 100%;">
+					<div class="carousel-caption d-none d-md-block">
+						<a href="{% url 'shop' %}" class="btn btn-light btn-ecomm px-4 rounded fw-bold">Shop Now</a>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			<button class="carousel-control-prev" type="button" data-bs-target="#myCarousel" data-bs-slide="prev">
+				<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Previous</span>
+			</button>
+			<button class="carousel-control-next" type="button" data-bs-target="#myCarousel" data-bs-slide="next">
+				<span class="carousel-control-next-icon" aria-hidden="true"></span>
+				<span class="visually-hidden">Next</span>
+			</button>
+		</div>
+		
+		<!--end carousel-->
+
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start pramotion-->
+				<section class="py-4">
+					<div class="container">
+						<div class="separator mt-3">
+							<div class="line"></div>
+							<h5 class="mb-0 fw-bold separator-title">Browse Category</h5>
+							<div class="line"></div>
+							
+						</div>
+					</div>
+				</section>
+				<section class="py-4">
+					<div class="container">
+						<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-3 g-4">
+							{% for category in categories %}
+							{% if forloop.first or forloop.counter <= 3 %}
+							<div class="col">
+								{% if forloop.counter0 == 0 %}
+								<div class="card rounded-3 shadow-none bg-info bg-opacity-25">
+								{% elif forloop.counter0 == 1 %}
+								<div class="card rounded-3 shadow-none bg-warning bg-opacity-25">
+								{% else %}
+								<div class="card rounded-3 shadow-none bg-danger bg-opacity-25">
+								{% endif %}
+									<div class="row g-0 align-items-center">
+										<div class="col" style="width: 200px; height: 200px; overflow: hidden;">
+											<img src="{{ category.image.url }}" class="img-fluid rounded-3" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ category.name }}" />
+										</div>
+										<div class="col">
+											<div class="card-body">
+												<h5 class="card-title text-uppercase fw-bold">{{ category.name }}</h5>
+												<p class="card-text">{{ category.description }}</p>
+												<a href="{% url 'shop' %}" class="btn btn-outline-dark btn-ecomm rounded">SHOP NOW</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							{% endif %}
+							{% endfor %}
+						</div>
+						<!--end row-->
+					</div>
+				</section>
+				
+				<!--end pramotion-->
+				<!--start Featured product-->
+				<section class="py-4">
+					<div class="container">
+						<div class="separator pb-4">
+							<div class="line"></div>
+							<h5 class="mb-0 fw-bold separator-title">Latest Arrivals</h5>
+							<div class="line"></div>
+						</div>
+						<div class="product-grid">
+							<div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-4 row-cols-xxl-5 g-3 g-sm-4">
+								{% for product in products %}
+								{% if forloop.first or forloop.counter <= 4 %}
+								<div class="col">
+									<div class="card ">
+										<div class="position-relative overflow-hidden rounded">
+											<div class="image-wrapper" style="width: 280px; height: 320px; overflow: hidden;">
+												<a href="{% url 'product_details' product.id %}">
+													<img src="{{ product.thumbnail.url }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: contain; background-color: white;" alt="{{ product.thumbnail.url }}">
+												</a>
+											</div>
+										</div>
+										<div class="card-body px-0">
+											<div class="d-flex align-items-center justify-content-between">
+												<div class="">
+													<p class="mb-1 product-short-name">{{ product.brand|upper }}</p>
+													<h6 class="mb-0 fw-bold product-short-title">{{ product.name }}</h6>
+												</div>
+												{% if request.user.is_authenticated %}
+													{% if product.is_added_to_wishlist %}
+														<i class="bi bi-heart-fill text-danger fs-4"></i>
+													{% else %}
+														<a href="{% url 'user_product:add_to_wishlist' product.id %}" class="add-to-wishlist-link"><i class="bi bi-heart text-secondary fs-4"></i></a>
+													{% endif %}
+												{% endif %}
+
+
+											</div>
+											<div class="cursor-pointer rating mt-2">
+												<i class="bx bxs-star text-warning"></i>
+												<i class="bx bxs-star text-warning"></i>
+												<i class="bx bxs-star text-warning"></i>
+												<i class="bx bxs-star text-warning"></i>
+												<i class="bx bxs-star text-warning"></i>
+											</div>
+											<div class="product-price d-flex align-items-center justify-content-start gap-2 mt-2">
+												{% if product.offer %}
+												<div class="h6 fw-bold" style="font-size: 17px;">{{ product.display_price }}</div>
+												<div class="h6 fw-light fw-bold text-secondary text-decoration-line-through" style="font-size: 15px;">{{ product.formatted_price }}</div>
+												<div class="h6 fw-light fw-bold text-success ms-3" style="font-size: 15px;">{{ product.offer.percent }}% off</div>
+												{% else %}
+												<div class="h6 fw-bold" style="font-size: 17px;">{{ product.display_price }}</div>
+												{% endif %}
+											</div>
+										</div>
+									</div>
+								</div>
+								{% endif %}
+								{% endfor %}
+							</div><!--end row-->
+						</div>
+					</div>
+				</section>
+				
+				<!--end Featured product-->
+				
+				
+
+				
+
+				<!--start brands-->
+				<section class="py-4">
+					<div class="container">
+						<div class="separator pb-4">
+							<div class="line"></div>
+							<h5 class="mb-0 fw-bold separator-title">Browse Brands</h5>
+							<div class="line"></div>
+						</div>
+						<div class="container border rounded">
+							<div class="row">
+								<div class="MultiCarousel" data-items="1,3,5,6" data-slide="1" id="MultiCarousel"  data-interval="1000">
+									<div class="MultiCarousel-inner">
+										{% for brand in brands %}
+										<div class="item">
+											<div class="pad15 border mx-2 rounded p-1 bg-transparent">
+												<a href="">
+													<img src="{{ brand.image.url }}" class="img-fluid" style="width: 100%; height: 100%; object-fit: cover;" alt="{{ brand.image.url }}" />
+												</a>
+											</div>
+										</div>
+										{% endfor %}
+									</div>
+									<button class="btn btn-primary leftLst"><</button>
+									<button class="btn btn-primary rightLst">></button>
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				
+				<!--end brands-->
+
+				
+		
+				<!--end bottom products section-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+{% endblock %}
+
+{% block script %}
+<script>
+	// Activate the carousel
+	$('.carousel').carousel({
+		interval: 3000 // Set the interval to 2 seconds (2000 milliseconds)
+	});
+	</script>		  
+	<script>
+	var myCarousel = document.getElementById('myCarousel');
+
+	var carousel = new bootstrap.Carousel(myCarousel, {
+		interval: 3000, 
+		pause: 'hover',
+		wrap: true
+	});
+</script>
+
+<script>
+	$(document).ready(function () {
+		var itemsMainDiv = ('.MultiCarousel');
+		var itemsDiv = ('.MultiCarousel-inner');
+		var itemWidth = "";
+	
+		$('.leftLst, .rightLst').click(function () {
+			var condition = $(this).hasClass("leftLst");
+			if (condition)
+				click(0, this);
+			else
+				click(1, this)
+		});
+	
+		ResCarouselSize();
+	
+	
+	
+	
+		$(window).resize(function () {
+			ResCarouselSize();
+		});
+	
+		//this function define the size of the items
+		function ResCarouselSize() {
+			var incno = 0;
+			var dataItems = ("data-items");
+			var itemClass = ('.item');
+			var id = 0;
+			var btnParentSb = '';
+			var itemsSplit = '';
+			var sampwidth = $(itemsMainDiv).width();
+			var bodyWidth = $('body').width();
+			$(itemsDiv).each(function () {
+				id = id + 1;
+				var itemNumbers = $(this).find(itemClass).length;
+				btnParentSb = $(this).parent().attr(dataItems);
+				itemsSplit = btnParentSb.split(',');
+				$(this).parent().attr("id", "MultiCarousel" + id);
+	
+	
+				if (bodyWidth >= 1200) {
+					incno = itemsSplit[3];
+					itemWidth = sampwidth / incno;
+				}
+				else if (bodyWidth >= 992) {
+					incno = itemsSplit[2];
+					itemWidth = sampwidth / incno;
+				}
+				else if (bodyWidth >= 768) {
+					incno = itemsSplit[1];
+					itemWidth = sampwidth / incno;
+				}
+				else {
+					incno = itemsSplit[0];
+					itemWidth = sampwidth / incno;
+				}
+				$(this).css({ 'transform': 'translateX(0px)', 'width': itemWidth * itemNumbers });
+				$(this).find(itemClass).each(function () {
+					$(this).outerWidth(itemWidth);
+				});
+	
+				$(".leftLst").addClass("over");
+				$(".rightLst").removeClass("over");
+	
+			});
+		}
+	
+	
+		//this function used to move the items
+		function ResCarousel(e, el, s) {
+			var leftBtn = ('.leftLst');
+			var rightBtn = ('.rightLst');
+			var translateXval = '';
+			var divStyle = $(el + ' ' + itemsDiv).css('transform');
+			var values = divStyle.match(/-?[\d\.]+/g);
+			var xds = Math.abs(values[4]);
+			if (e == 0) {
+				translateXval = parseInt(xds) - parseInt(itemWidth * s);
+				$(el + ' ' + rightBtn).removeClass("over");
+	
+				if (translateXval <= itemWidth / 2) {
+					translateXval = 0;
+					$(el + ' ' + leftBtn).addClass("over");
+				}
+			}
+			else if (e == 1) {
+				var itemsCondition = $(el).find(itemsDiv).width() - $(el).width();
+				translateXval = parseInt(xds) + parseInt(itemWidth * s);
+				$(el + ' ' + leftBtn).removeClass("over");
+	
+				if (translateXval >= itemsCondition - itemWidth / 2) {
+					translateXval = itemsCondition;
+					$(el + ' ' + rightBtn).addClass("over");
+				}
+			}
+			$(el + ' ' + itemsDiv).css('transform', 'translateX(' + -translateXval + 'px)');
+		}
+	
+		//It is used to get some elements from btn
+		function click(ell, ee) {
+			var Parent = "#" + $(ee).parent().attr("id");
+			var slide = $(Parent).attr("data-slide");
+			ResCarousel(ell, Parent, slide);
+		}
+	
+	});
+</script>
+{% endblock %}

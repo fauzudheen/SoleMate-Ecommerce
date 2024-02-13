@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report</title>
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-HvnoaGyr4hC3tm+arZoI2Bq2AzT4a/n2djIusLIzD1eNaoxtzb2QDhe9/yYJwm7nlMRVvW38g1/g1+OL+JMm0Q==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 10%;
+        }
+        .logo img {
+            height: 45px;
+            width: auto;
+            
+            border: 2px solid #23521b;
+            padding: 5px;
+        }
+        h1 {
+            text-align: center;
+            color: #007bff;
+        }
+        .report-section {
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .report-heading {
+            font-size: 20px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .report-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #007bff;
+        }
+        .best-selling-item {
+            margin-top: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 20px;
+        }
+        .report-message {
+            font-style: italic;
+            color: #999;
+        }
+        .icon {
+            color: #007bff;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body onload="printSalesReport()">
+    <div class="container">
+        <div class="logo">
+            <img src="{% static 'Admin/assets/images/brand.jpg' %}" alt="logo" />
+        </div>
+
+        <h1>Sales Report <i class="fas fa-chart-line icon"></i></h1>
+
+        {{ sales_report_html | safe }}
+    </div>
+    <script>
+        function printSalesReport() {
+          window.print(); 
+        }
+      </script>
+</body>
+
+    
+</html>

@@ -1,0 +1,117 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Edit Product{% endblock %}
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>Edit Product</h2>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Product Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Manage Product</li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Product</li>
+              </ol>
+            </nav>
+        </div>
+        <div class="row">
+          <div class="col-md-7 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Product Form</h4>
+                  <p class="card-description"> Edit the details of your Product </p>
+                  <form class="forms-sample" method="post" id="myForm" enctype="multipart/form-data">
+                      {% csrf_token %}
+                      <img src="{{ product.thumbnail.url }}" alt="Existing Image" class="m-3" style="max-width: 150px;">
+                      {{ form|crispy }}
+                      <br>
+                      <button type="submit" class="btn btn-gradient-info mr-2">Save</button>
+                      <button class="btn btn-gradient-dark mr-2" type="button" onclick="clearForm()">Default</button>
+                      <a href="{% url 'admin_product_management:product' %}" class="btn btn-gradient-light mr-2">Cancel</a>
+  
+                  
+                </div>
+              </div>
+            </div>
+            <div class="col-md-5 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Product Variant</h4>
+                    <a href="{% url 'admin_product_management:add_product_variant' product.id %}" class="btn btn-gradient-info btn-sm mb-3" style="font-size: 13px;">+ Add</a>
+                    <table class="border">
+                      <tr class="border">
+                        <th class="border p-2" style="text-align: center; width:100px; font-size: 14px;">Size</th>
+                        <th class="border p-2" style="text-align: center; width:100px; font-size: 14px;">Quantity</th>
+                        <th class="border p-2" style="text-align: center; width:170px; font-size: 14px;">Action</th>
+                      </tr>
+                      {% for product_variant in product.variants %}
+                        <tr class="border">
+                            <td class="border p-2 text-center">{{ product_variant.size }}</td>
+                            <td class="border p-2 text-center">{{ product_variant.quantity }}</td>
+                            <td class="border p-2 text-center">
+                                <a href="{% url 'admin_product_management:edit_product_variant' product_variant.id %}" class="btn btn-gradient-primary btn-sm" style="font-size: 10px;">Edit</a>
+                                <a href="{% url 'admin_product_management:delete_product_variant' product_variant.id %}" class="btn btn-gradient-danger btn-sm" style="font-size: 10px;">Delete</a>
+                            </td>
+                        </tr>
+                      {% endfor %}
+                    </table>
+
+                    <div class="border border p-3 rounded mt-3">
+                      <h4>Existing Offer</h4>
+                      <hr>
+                      {% if not product.offers %}
+                      <a href="{% url 'admin_product_management:add_offer' product.id %}" class="btn btn-gradient-info btn-sm mb-3" style="font-size: 13px;">+ Add</a>
+                      {% endif %}
+                      {% if product.offers %}
+                      <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Offer Percent</th>
+                                <th style="text-align: center;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for offer in product.offers %}
+                            <tr>
+                                <td>{{ offer.percent }} %</td>
+                                <td style="text-align: center;">
+                                    <a href="{% url 'admin_product_management:edit_offer' offer.id %}" class="btn btn-gradient-primary btn-sm mx-2">Edit</a>
+                                    <a href="{% url 'admin_product_management:delete_offer' offer.id %}" class="btn btn-gradient-danger btn-sm">Delete</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        
+                        </tbody>
+                    </table>
+                    <br>
+                    {% endif %}
+                    </div>
+
+                    <div class="border border p-3 rounded mt-3">
+                      <h4>Existing images</h4>
+                      <hr>
+                    {% for image in existing_images %}
+                    <img src="{{ image.images.url }}" alt="Existing Image" class="m-3" style="max-width: 120px;">
+                    <a href="{% url 'admin_product_management:delete_image' image.id %}" class="btn btn-gradient-danger btn-sm mr-2">Delete</a>
+                    <br>
+                    {% endfor %}
+                    <br>
+                    <label for="image_field" class="my-3">Images*</label>
+                    <br>
+                    <input type="file" name="images" accept="image/*" multiple class="image_field mb-5">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+    </div>
+</div>
+<script>
+    function clearForm() {
+        document.getElementById("myForm").reset();
+    }
+</script>
+
+{% endblock %}

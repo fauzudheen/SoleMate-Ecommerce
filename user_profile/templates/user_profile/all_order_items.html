@@ -1,0 +1,221 @@
+{% extends 'UserHome/base.html' %}
+
+{% block title %}
+Full Order Details
+{% endblock %}
+
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Full Order Details</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Acccount</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Orders</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Full Order Details</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4 bg-light">
+					<div class="container">
+						<div class="shop-cart">
+							<div class="row">
+								<div class="col-12">
+									<div class="checkout-review">
+										<div class="card rounded shadow-none mb-3 border">
+											<div class="card-body ">
+												<h5 class="mb-0">Full Order Details</h5>
+												<hr>
+												<div class="shop-cart-list">
+													{% for item in order_items %}
+													<div class="cart-item row align-items-center rounded">
+														<div class="col-12 col-lg-4">
+															<div class="d-lg-flex align-items-center gap-3">
+																<div class="col">
+																		<p class="mb-0">Order Date</p>
+																		<div class="h6 fw-bold" style="font-size: 13px;">{{ item.order.order_date }}</div>
+																</div>
+																<div class="col">
+																		<p class="mb-0">Delivery Date</p>
+																		<div class="h6 fw-bold" style="font-size: 13px;">{{ item.delivery_date }}</div>
+																</div>
+															</div>
+															<div class="d-lg-flex align-items-center gap-3">
+																<div class="cart-img text-center text-lg-start">
+																	<img src="{{ item.product.thumbnail.url }}" class="img-fluid rounded" style="width: 130px; height: 130px; object-fit: contain; background-color: white;" alt="{{ item.product.name }}">
+																</div>
+																<div class="cart-detail text-center text-lg-start">
+																	<p class="mb-1 product-short-name">{{ item.product.brand|upper }}</p>
+																	<h6 class="mb-0 fw-bold product-short-title">{{ item.product.name }}</h6>
+																	<p class="mb-0">Size: <span>{{ item.product_variant }}</span></p>
+																	<div class="product-price d-flex align-items-center justify-content-start gap-2 mt-2">
+																		{% if item.product.offer %}
+																			<div class="h6 fw-bold" style="font-size: 16px;">₹{{ item.product.display_price }}</div>
+																			<div class="h6 fw-light fw-bold text-secondary text-decoration-line-through" style="font-size: 14px;">{{ item.product.formatted_price }}</div>
+																			<div class="h6 fw-light fw-bold text-success ms-3" style="font-size: 14px;">{{ item.product.offer.percent }}% off</div>
+																		{% else %}
+																			<div class="h6 fw-bold" style="font-size: 16px;">₹{{ item.product.display_price }}</div>
+																		{% endif %}
+																	</div>
+																</div>
+															</div>
+															<div class="row">
+																<div class="subtotal">
+																	<span class="mb-0">Order Tracking ID: </span>
+																	<span class="h6 fw-bold text-danger" style="font-size: 15px;">{{ item.tracking_number }}</span>
+																</div>																
+															</div>
+														</div>
+														<div class="col-12 col-lg-3">
+															<div class="cart-action text-center">
+																<div class="row mt-5">
+																	<div class="col-6">
+																		<div class="subtotal">
+																			<p class="mb-0">Quantity</p>
+																			<div class="h6 fw-bold" style="font-size: 15px;">{{ item.quantity }}</div>
+																		</div>
+																	</div>
+																	<div class="col-6">
+																		<div class="subtotal">
+																			<p class="mb-0">Subtotal</p>
+																			<div class="h6 fw-bold" style="font-size: 15px;">₹{{ item.sub_total }}</div>
+																		</div>
+																	</div>
+																	<div class="cart-action align-items-left mt-4">
+																		<div class="row mb-3">
+																			<div class="col-md-4">
+																				<div class="payment-mode">
+																					<span class="p">Payment Method:</span>
+																					{% if item.payment_method == 'Razorpay' %}
+																					<span class="badge rounded-pill bg-primary float-md-end">{{ item.payment_method }}</span>
+																					{% elif item.payment_method == 'Wallet' %}
+																					<span class="badge rounded-pill bg-warning float-md-end">{{ item.payment_method }}</span>
+																					{% else %}	
+																					<span class="badge rounded-pill bg-dark float-md-end">{{ item.payment_method }}</span>
+																					{% endif %}
+																				</div>
+																			</div>
+																			<div class="col-md-4">
+																				<div class="payment-mode">
+																					<span class="p">Payment Status:</span>
+																					{% if item.payment_status == 'Complete' %}
+																					<span class="badge rounded-pill bg-success float-md-end">{{ item.payment_status }}</span>
+																					{% else %}	
+																					<span class="badge rounded-pill bg-warning float-md-end">{{ item.payment_status }}</span>
+																					{% endif %}	
+																				</div>
+																			</div>
+																			<div class="col-md-4"> <!-- Use Bootstrap grid classes to create columns -->
+																				<div class="payment-mode">
+																					<span class="p">Order Status:</span>
+																					<span class="badge rounded-pill bg-{{ item.order_status.color }} float-md-end">{{ item.order_status.status }}</span>
+																				</div>
+																			</div>
+																		</div>
+																	</div>
+																	
+																</div>
+															</div>
+														</div>
+														<div class="col-12 col-lg-3 ms-4">
+															<div class="cart-action">
+																<div class="row">
+																	<div class="shipping-aadress">
+																		<h6 class="mb-3">Shipping to:</h6>
+																		<p class="mb-1"><span class="text-dark">Full Name:</span> {{ item.order.address.full_name }}</p>
+																		<p class="mb-1"><span class="text-dark">Street Address:</span> {{ item.order.address.street_address }}</p>
+																		<p class="mb-1"><span class="text-dark">City:</span>{{ item.order.address.city }}</p>
+																		<p class="mb-1"><span class="text-dark">District:</span> {{ item.order.address.district }}</p>
+																		<p class="mb-1"><span class="text-dark">State:</span> {{ item.order.address.state }}</p>
+																		<p class="mb-1"><span class="text-dark">Pincode:</span> {{ item.order.address.pincode }}</p>
+																	</div>
+																</div>
+															</div>
+														</div>
+														<div class="col-12 col-lg-1">
+															<div class="cart-action text-center">
+																<div class="row">
+																	<div class="d-flex"> 
+																		{% if item.payment_method == 'Not Decided' and item.order_status.id != 5 and item.order_status.id != 4 %}
+																		<a href="{% url 'user_order:complete_pending_payment' item.id %}" class="btn btn-primary btn-sm rounded fw-bold mx-2" style="font-size: 12px;">Pay</a>
+																		{% endif %}
+																		{% if item.order_status.id != 5 and item.order_status.id != 4 %}
+																		<a href="{% url 'user_profile:cancel_order_item' item.id %}" class="btn btn-danger btn-sm rounded fw-bold" style="font-size: 12px;">Cancel</a>
+																		{% endif %} 
+																		{% if item.order_status.id == 4 %}
+																		<a href="{% url 'user_profile:print_invoice' item.id %}" class="btn btn-success btn-sm rounded fw-bold" style="font-size: 12px;">Print Invoice</a>
+																		{% endif %}
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+													<hr>
+												{% endfor %}
+
+												</div>
+											</div>
+										</div>
+
+										<!-- Pagination -->
+										<nav aria-label="Page navigation">
+											<ul class="pagination justify-content-center mt-3">
+												{% if order_items.has_previous %}
+													<li class="page-item">
+														<a class="page-link" href="?page=1">&laquo;</a>
+													</li>
+													<li class="page-item">
+														<a class="page-link" href="?page={{ order_items.previous_page_number }}">{{ order_items.previous_page_number }}</a>
+													</li>
+												{% endif %}
+												<li class="page-item active">
+													<a class="page-link" href="?page={{ order_items.number }}">{{ order_items.number }}</a>
+												</li>
+												{% if order_items.has_next %}
+													<li class="page-item">
+														<a class="page-link" href="?page={{ order_items.next_page_number }}">{{ order_items.next_page_number }}</a>
+													</li>
+													<li class="page-item">
+														<a class="page-link" href="?page={{ order_items.paginator.num_pages }}">&raquo;</a>
+													</li>
+												{% endif %}
+											</ul>
+										</nav>
+
+
+
+										<div class="row">
+											<div class="col-md-6 mx-auto">
+												<div class="d-grid">
+													<a href="{% url 'user_profile:orders' %}" class="btn btn-dark rounded btn-ecomm">
+														<i class="bx bx-chevron-left"></i> Back to Orders
+													</a>
+												</div>
+											</div>
+										</div>
+																		
+									</div>
+								</div>
+							</div>
+							<!--end row-->
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		{% endblock %}

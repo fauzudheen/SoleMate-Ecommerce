@@ -1,0 +1,45 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Edit Product Variant{% endblock %}
+
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>Edit Product Varient</h2>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Product Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Edit Product Variant</li>
+              </ol>
+            </nav>
+        </div>
+        <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Product Variant Form</h4>
+                <p class="card-description"> Edit the heading, image and description of your Product Variant </p>
+                <form class="forms-sample" method="post" id="myForm" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{ form|crispy }}
+                                    
+                    <button type="submit" class="btn btn-gradient-info mr-2">Save</button>
+                    <button class="btn btn-gradient-dark mr-2" type="button" onclick="clearForm()">Default</button>
+                    <a href="{% url 'admin_product_management:edit_product' product.id %}" class="btn btn-gradient-light mr-2">Cancel</a>
+
+                </form>
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+<script>
+    function clearForm() {
+        document.getElementById("myForm").reset();
+    }
+</script>
+
+{% endblock %}

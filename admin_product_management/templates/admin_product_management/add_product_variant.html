@@ -1,0 +1,89 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Add Product Variant{% endblock %}
+{% block style %}
+<style>
+  .inline-fields span {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+</style>
+{% endblock %}
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>Add Product Varient</h2>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Product Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Add Product Variant</li>
+              </ol>
+            </nav>
+        </div>
+        <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Product Variant Form</h4>
+                <p class="card-description"> Size is the only variant we have as of now. Select product, size and their corresponding quantity</p>
+                <form class="forms-sample" method="post" id="myForm" enctype="multipart/form-data">
+                  {% csrf_token %}
+                  <div class="form-group" id="form-container">
+                      <div class="default-fields">
+                          <!-- Default size and quantity fields -->
+                          <div class="inline-fields">
+                              <span>{{ form.size|as_crispy_field }}</span>
+                              <span>{{ form.quantity|as_crispy_field }}</span>
+                          </div>
+                      </div>
+                  </div>
+                  <br>
+                  <button type="submit" class="btn btn-gradient-success mr-2">Save</button>
+                  <button class="btn btn-gradient-dark mr-2" type="button" onclick="clearForm()">Clear</button>
+                  <a href="{% url 'admin_product_management:edit_product' product.id %}" class="btn btn-gradient-light mr-2">Cancel</a>
+              </form>
+              
+              
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+<script>
+    function clearForm() {
+        document.getElementById("myForm").reset();
+    }
+</script>
+<script>
+  document.querySelector('.add-field-btn').addEventListener('click', function() {
+    var defaultFields = document.querySelector('.default-fields');
+    var clonedFields = defaultFields.cloneNode(true); // Clone default fields
+
+    // Clear input values in the cloned fields
+    var inputs = clonedFields.querySelectorAll('input');
+    inputs.forEach(function(input) {
+        input.value = ''; // Clear input values
+    });
+
+    // Append cloned fields to the form container
+    var formContainer = document.getElementById('form-container');
+    formContainer.appendChild(clonedFields);
+});
+
+document.addEventListener('click', function(event) {
+    if (event.target.classList.contains('remove-field-btn')) {
+        var fieldToRemove = event.target.closest('.inline-fields');
+        if (fieldToRemove.parentNode.querySelectorAll('.inline-fields').length > 1) {
+            fieldToRemove.parentNode.removeChild(fieldToRemove);
+        }
+    }
+});
+
+
+
+</script>
+
+{% endblock %}

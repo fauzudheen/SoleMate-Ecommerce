@@ -1,0 +1,70 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Coupon{% endblock %}
+
+{% block style %}
+
+{% endblock %}
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>Coupon</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Manage Coupon</a></li>
+                </ol>
+            </nav>
+        </div>
+
+        <a href="{% url 'admin_product_management:add_coupon' %}" class="btn btn-gradient-info btn-lg mb-3">+ Add Coupon</a>
+        <a href="{% url 'admin_product_management:deactivated_coupons' %}" class="btn btn-gradient-danger btn-lg mb-3 mx-2">Deactivated Coupons</a>
+        
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Coupons</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Code </th>
+                                        <th>Price Range </th>
+                                        <th>Discount Percent </th>
+                                        <th>Expiry Date</th>
+                                        <th style="text-align: center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for coupon in coupons %}
+                                    <tr>
+                                        <td>{{ coupon.code }}</td>
+                                        <td>₹{{ coupon.min_price }} - ₹{{ coupon.max_price }}</td>
+                                        <td>{{ coupon.discount_percent }}</td>
+                                        <td>{{ coupon.expiry_date }}</td>
+                                        <td style="text-align: center;">
+                                            <a href="{% url 'admin_product_management:edit_coupon' coupon.id %}" class="btn btn-gradient-primary btn-sm mx-2">Edit</a>
+                                            <a href="{% url 'admin_product_management:deactivate_coupon' coupon.id %}" class="btn btn-gradient-danger btn-sm">Deactivate</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+{% endblock %}

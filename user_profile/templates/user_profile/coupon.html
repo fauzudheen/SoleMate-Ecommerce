@@ -1,0 +1,134 @@
+{% extends 'UserHome/base.html' %}
+{% block title %}Coupon{% endblock %}
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Coupon</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="user_profile:account:;">Account</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Coupon</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<h3 class="d-none">Coupon</h3>
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-lg-3">
+										<div class="card shadow-none mb-3 mb-lg-0 border">
+											<div class="card-body">
+												<div class="list-group list-group-flush">	
+													<a href="{% url 'user_profile:account' %}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Account Details <i class='bx bx-user-circle fs-5'></i></a>
+													<a href="{% url 'user_profile:orders' %}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">My Orders <i class='bx bx-cart-alt fs-5'></i></a>
+													<a href="{% url 'user_profile:addresses' %}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Addresses <i class='bx bx-home-smile fs-5'></i></a>
+													<a href="{% url 'user_profile:wallet' %}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Wallet <i class='bx bx-wallet fs-5'></i></a>
+													<a href="{% url 'user_profile:coupon' %}" class="list-group-item bg-success d-flex justify-content-between align-items-center text-white">Coupon and Referral <i class='bx bx-tag fs-5'></i></a>
+													<a href="{% url 'logout' %}" class="list-group-item d-flex justify-content-between align-items-center bg-transparent">Logout <i class='bx bx-log-out fs-5'></i></a>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-lg-9">
+										<div class="card shadow-none border rounded mb-0 p-2 bg-light">
+											<div class="card-body">
+												<div class="">
+													<div class="d-flex justify-content-between">
+													<h4 class="mb-4 fw-bold">Coupons</h4>
+													
+													</div>
+
+													<div class="d-flex justify-content-between align-items-center">
+														{% if referral_code %}
+													<div class="d-flex align-items-center">
+														<p class="border rounded bg-warning p-1 ps-2 text-dark" style="width: 50%;">Enjoy instant ₹200 wallet cash! Use the referral code when referring a friend</p>
+														<div class="d-flex align-items-center">
+															<label class="mx-2" style="font-size: 15px;">Referral Code:</label>
+															<h6 class="text-primary fw-bold me-2 border rounded bg-white p-2">{{ referral_code }}</h6>
+														</div>
+													</div>
+													
+													{% else %}
+													<p style="width: 30%;">Generate a referral code to enjoy instant wallet cash</p>
+														<a href="{% url 'user_profile:generate_referral_code' %}"><button class="btn btn-primary btn-sm fw-bold rounded py-0 mx-2" style="height: 10%">Generate Referral Code</button></a>
+													{% endif %}
+
+													<div style="width: 60%;">
+														{% if not referral.is_redeemed %}
+														<form action="{% url 'user_profile:apply_referral' %}" method="post" class="input-group">
+															{% csrf_token %}
+															<input type="text" name="referral_code" class="form-control rounded" placeholder="Enter referral code" maxlength="8">
+															<button class="btn btn-success btn-sm rounded ms-1 fw-bold" type="submit">Apply</button>
+														</form>
+														{% else %}
+														<p style="width:90%;" class="border rounded p-1 bg-success text-white">You have redeemed your referral!</p>
+														{% endif %}
+													</div>
+													</div>
+
+													<div class="card shadow-none mt-2 p-3 mb-lg-0 border">
+														<div class="table-responsive">
+															<table class="table table-bordered rounded">
+																<thead>
+																	<tr>
+																		<th>Code</th>
+																		<th>Price Range </th>
+																		<th>Discount Percent</th>
+																		<th style="width: 30%;">Description</th>
+																		<th style="width: 15%;">Expiry Date</th>
+																		<th>Status</th>
+																	</tr>
+																</thead>
+																<tbody>
+																	{% for coupon in coupons %}
+																	<tr>
+																		<td>{{ coupon.code }}</td>
+																		<td>₹{{ coupon.min_price }} - ₹{{ coupon.max_price }}</td>
+																		<td>{{ coupon.discount_percent }}%</td>
+																		<td>{{ coupon.description }}</td>
+																		<td>{{ coupon.expiry_date }}</td>
+																		{% if coupon.status == "Redeemed" %}
+																		<td class="text-secondary">{{ coupon.status }}</td>
+																		{% elif coupon.status == "Available"%}
+																		<td class="text-success">{{ coupon.status }}</td>
+																		{% else %}
+																		<td class="text-danger">{{ coupon.status }}</td>
+																		{% endif %}
+																	</tr>
+																	{% endfor %}
+																</tbody>
+															</table>
+														</div>
+														
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!--end row-->
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		{% endblock %}

@@ -1,0 +1,133 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Add Brand{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css" integrity="sha512-bs9fAcCAeaDfA4A+NiShWR886eClUcBtqhipoY5DM60Y1V3BbVQlabthUBal5bq8Z8nnxxiyb1wfGX2n76N1Mw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" integrity="sha512-hvNR0F/e2J7zPPfLC9auFe3/SE0yG4aJCOd/qxew74NN7eyiSKjr7xJJMu1Jy2wf7FXITpWS1E/RY8yzuXN7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>Add Brand</h2>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Product Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Manage Brand</li>
+                <li class="breadcrumb-item active" aria-current="page">Add Brand</li>
+              </ol>
+            </nav>
+        </div>
+        <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Brand Form</h4>
+                <p class="card-description"> Add the name and image for your Brand </p>
+                <form action="{% url 'admin_product_management:add_brand' %}" method="post" enctype="multipart/form-data" id="image-form">
+                  {% csrf_token %}
+                  {{ form|crispy }}
+                  <input type="hidden" name="cropped_image" id="cropped-image" required>
+                  <div id="image-box" class="mb-3"></div>
+                  <button type="submit" class="btn btn-gradient-info mr-2" id="crop-button">Add</button>
+                  <button class="btn btn-gradient-dark mr-2" type="button" onclick="clearForm()">Clear</button>
+                  <a href="{% url 'admin_product_management:brand' %}" class="btn btn-gradient-light mr-2">Cancel</a>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+          function clearForm() {
+              document.getElementById("image-form").reset();
+          }
+      </script>
+
+{% endblock %}
+
+{% block script %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js" integrity="sha512-9KkIqdfN7ipEW6B6k+Aq20PV31bjODg4AA52W+tYtAE0jE0kMx49bjJ3FgvS56wzmyfMUHbQ4Km2b7l9+Y/+Eg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.js" integrity="sha512-Zt7blzhYHCLHjU0c+e4ldn5kGAbwLKTSOTERgqSNyTB50wWSI21z0q6bn/dEIuqf6HiFzKJ6cfj2osRhklb4Og==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    var cropper;
+
+    $('#id_image').on('change', function () {
+        var input = this;
+        var file = input.files[0];
+
+        if (file) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#image-box').html('<img id="cropper-image" src="' + e.target.result + '" style="max-width: 100%;">');
+
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(document.getElementById('cropper-image'), {
+                    aspectRatio: 1,
+                    viewMode: 2,
+                });
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    $('#image-form').on('reset', function () {
+        if (cropper) {
+            cropper.destroy();
+        }
+        $('#image-box').empty();
+    });
+
+    $('#image-form').on('submit', function (e) {
+    e.preventDefault();
+
+    if (cropper) {
+        var canvas = cropper.getCroppedCanvas();
+        var croppedImageData = canvas.toDataURL('image/jpeg');
+        var blob = dataURLtoBlob(croppedImageData);
+        var formData = new FormData(this);
+        formData.set('image', blob, 'cropped_image.jpg');
+        formData.delete('id_image');
+
+        $.ajax({
+            type: "POST",
+            url: $(this).attr('action'),
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (response) {
+                console.log('Form submitted successfully');
+                if (response.redirect_url) {
+                    window.location.href = response.redirect_url;
+                } else {
+                    console.error('Missing redirect_url in the response:', response);
+                }
+
+            },
+            error: function (error) {
+                console.error('Error submitting form:', error);
+            }
+        });
+    }
+});
+
+function dataURLtoBlob(dataURL) {
+    var parts = dataURL.split(';base64,');
+    var contentType = parts[0].split(':')[1];
+    var raw = window.atob(parts[1]);
+    var rawLength = raw.length;
+    var uInt8Array = new Uint8Array(rawLength);
+    for (var i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i);
+    }
+    return new Blob([uInt8Array], { type: contentType });
+}
+
+
+</script>
+
+{% endblock %}

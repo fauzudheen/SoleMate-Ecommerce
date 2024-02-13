@@ -1,0 +1,109 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}View Product{% endblock %}
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>View Product</h2>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Product Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">View Product</li>
+              </ol>
+            </nav>
+        </div>
+        <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Product Details</h4>
+                <p class="card-description"> View the details of your Product </p> 
+                <table class="table" border="1" style="border-color: #ff9800; border-radius: 8px;">
+                  <tbody>
+                    <tr>
+                      <th>Thumbnail:</th>
+                      <td><img src="{{ product.thumbnail.url }}" alt="" class="" style="height: 100px; width: 150px"></td>
+                    </tr>
+                    <tr>
+                      <th>Name:</th>
+                      <td>{{ product.name }}</td>
+                    </tr>
+                    <tr>
+                      <th>Brand:</th>
+                      <td>{{ product.brand }}</td>
+                    </tr>
+                    <tr>
+                      <th>Category:</th>
+                      <td>{{ product.category }}</td>
+                    </tr>
+                    <tr>
+                      <th>Outer material:</th>
+                      <td>{{ product.outer_material }}</td>
+                    </tr>
+                    <tr>
+                      <th>Color:</th>
+                      <td>{{ product.color }}</td>
+                    </tr>
+                    <tr>
+                      <th>Price:</th>
+                      <td>₹{{ product.price }}</td>
+                    </tr>
+                    <tr>
+                      <th>Offer:</th>
+                      <td>
+                        {% if product.offer %}
+                          {{ product.offer.percent }}%
+                        {% else %}
+                          No Offer
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Variant:</th>
+                      <td>
+                        {% if product.variants %}
+                            <ul>
+                                {% for variant in product.variants %}
+                                    <li>Size: {{ variant.size }}, Quantity: {{ variant.quantity }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            NIL
+                        {% endif %}
+                      </td>
+                    </tr>
+                    <tr>
+                      <th>Images:</th>
+                      <td>
+                          {% if product.images %}
+                              {% for image in product.images %}
+                              <img src="{{ image.images.url }}" alt="Product Image" style="width: auto; height: 60px">
+
+                              {% endfor %}
+                          {% else %}
+                              No images available.
+                          {% endif %}
+                      </td>
+                  </tr>
+                  
+                    <tr>
+                      <td colspan="2">
+                        <a href="{% url 'admin_product_management:edit_product' product.id %}" class="btn btn-gradient-primary btn-sm mx-2">Edit</a>
+                        <a href="{% url 'admin_product_management:delete_product' product.id %}" class="btn btn-gradient-dark btn-sm mx-2">Unlist</a>
+                        <a href="{% url 'admin_product_management:product'%}" class="btn btn-gradient-info btn-sm mx-2">Product List</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                
+              </div>
+            </div>
+          </div>
+    </div>
+</div>
+
+
+{% endblock %}

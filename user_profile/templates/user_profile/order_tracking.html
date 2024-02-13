@@ -1,0 +1,171 @@
+{% extends 'UserHome/base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Track Order{% endblock %}
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Tracking</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Shop</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Order Tracking</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<p class="mb-0">Order ID/ </p>
+						<div class="col-6">
+							<form action="" method="post" class="d-flex">
+								{% csrf_token %}
+								{{ form | crispy }}
+								<button type="submit" class="btn btn-primary rounded text-white fw-bold mt-4 mx-3" style="height: 42px;"><i class='bx bx-trip'></i>Track</button>
+							</form>
+						</div>
+						
+						<hr>
+						<div class="row row-cols-1 row-cols-lg-4 rounded-4 gx-3 m-0 border">
+							<div class="col p-4 text-center border-end">
+								<h6 class="mb-1">Order Date:</h6>
+								<p class="mb-0">{{ order_item.order.order_date }}</p>
+							</div>
+							<div class="col p-4 text-center border-end">
+								<h6 class="mb-1">Delivery Date:</h6>
+								<p class="mb-0">{{ order_item.delivery_date }}</p>
+							</div>
+							<div class="col p-4 text-center border-end">
+								<h6 class="mb-1">Status:</h6>
+								<p class="mb-0">{{ order_item.order_status }}</p>
+							</div>
+							<div class="col p-4 text-center">
+								<h6 class="mb-1">Tracking ID:</h6>
+								<p class="mb-0">{{ order_item.tracking_number }}</p>
+							</div>
+						</div>
+						<!--end row-->
+						<div class="mt-3"></div>
+						<div class="checkout-payment">
+							<div class="card bg-transparent rounded-0 shadow-none">
+								<div class="card-body">
+									<div class="steps steps-light">
+										{% if order_item.order_status.id == 1 %}
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bx-check' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Order Confirmed</div>
+										</a>
+										<a class="step-item" href="javascript:;">
+											<div class="step-progress"><span class="step-count"><i class='bx bxs-truck' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Order Shipped</div>
+										</a>
+										<a class="step-item" href="javascript:;">
+											<div class="step-progress"><span class="step-count"><i class='bx bxs-store' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Ready for Pickup</div>
+										</a>
+										<a class="step-item" href="javascript:;">
+											<div class="step-progress"><span class="step-count"><i class='bx bxs-package' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Delivered</div>
+										</a>
+										{% endif %}
+										{% if order_item.order_status.id == 2 %}
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bx-check' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Order Confirmed</div>
+										</a>
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bxs-truck' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Order Shipped</div>
+										</a>
+										<a class="step-item" href="javascript:;">
+											<div class="step-progress"><span class="step-count"><i class='bx bxs-store' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Ready for Pickup</div>
+										</a>
+										<a class="step-item" href="javascript:;">
+											<div class="step-progress"><span class="step-count"><i class='bx bxs-package' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Delivered</div>
+										</a>
+										{% endif %}
+										{% if order_item.order_status.id == 3 %}
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bx-check' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Order Confirmed</div>
+										</a>
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bxs-truck' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Order Shipped</div>
+										</a>
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bxs-store' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Ready for Pickup</div>
+										</a>
+										<a class="step-item" href="javascript:;">
+											<div class="step-progress"><span class="step-count"><i class='bx bxs-package' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Delivered</div>
+										</a>
+										{% endif %}
+										{% if order_item.order_status.id == 4 %}
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bx-check' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Order Confirmed</div>
+										</a>
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bxs-truck' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Order Shipped</div>
+										</a>
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bxs-store' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Ready for Pickup</div>
+										</a>
+										<a class="step-item active" href="javascript:;">
+											<div class="step-progress bg-success"><span class="step-count bg-success"><i class='bx bxs-package' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Delivered</div>
+										</a>
+										{% endif %}
+										{% if order_item.order_status.id == 5 %}
+										<a class="step-item" href="javascript:;">
+											<div class="step-progress bg-danger"><span class="step-count bg-danger"><i class='bx bx-x' style="font-size: 22px;"></i></span>
+											</div>
+											<div class="step-label">Cancelled</div>
+										</a>
+										{% endif %}
+									</div>
+									
+								</div>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		{% endblock %}

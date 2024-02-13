@@ -1,0 +1,113 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Order Items{% endblock %}
+
+
+{% block style %}
+<style>
+  .table thead th {
+    border-top: 0;
+    border-bottom-width: 1px;
+    
+}
+.table th, .table td {
+  padding: 8px
+}
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>Order Items</h2>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Order Item Management</a></li>
+              </ol>
+            </nav>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Products</h4>
+                        <div class="table-responsive" style="overflow-x: auto;">
+                          <table class="table" border="1" style="border-color: #5050503f; border-radius: 18px; width: 100%;">
+                            <thead>
+                                <tr>
+                                  <th>SL</th>
+                                  <th>Image</th>
+                                  <th>Order Date</th>
+                                  <th id="product_th" style="text-align: center; width: 50px;">Item ID</th>
+                                  <th>Size</th>
+                                  <th>Quantity</th>
+                                  <th>Subtotal</th>
+                                  <th>Order<br>Status</th>
+                                  <th>Payment<br>Method</th>
+                                  <th>Payment<br>Status</th>
+
+                                  <th style="text-align: center;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in order_items %}
+                                <tr>
+                                  <td>{{ order_items.start_index|add:forloop.counter0 }}</td>
+                                    <td><img src="{{ item.product.thumbnail.url }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: contain; background-color: white;" alt=""></td>
+                                    <td>{{ item.order.order_date }}</td>
+                                    <td>{{ item.id }}</td>
+                                    <td>{{ item.product_variant }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                    <td>{{ item.sub_total }}</td>
+                                    <td>
+                                        <span class="badge rounded-pill bg-{{ item.order_status.color }} w-10">{{ item.order_status.status }}</span>
+                                    </td>
+                                    <td>{{ item.payment_method }}</td>
+                                    <td>{{ item.payment_status }}</td>
+                                    <td>
+                                        <a href="{% url 'admin_order:change_order_status' item.id %}" class="btn btn-gradient-light btn-sm mx-1">Change Status</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+
+
+
+                <!-- Pagination -->
+                <nav aria-label="Page navigation">
+                  <ul class="pagination justify-content-center mt-3">
+                      {% if order_items.has_previous %}
+                          <li class="page-item">
+                              <a class="page-link" href="?page=1">&laquo;</a>
+                          </li>
+                          <li class="page-item">
+                              <a class="page-link" href="?page={{ order_items.previous_page_number }}">{{ order_items.previous_page_number }}</a>
+                          </li>
+                      {% endif %}
+                      <li class="page-item active">
+                          <a class="page-link" href="?page={{ order_items.number }}">{{ order_items.number }}</a>
+                      </li>
+                      {% if order_items.has_next %}
+                          <li class="page-item">
+                              <a class="page-link" href="?page={{ order_items.next_page_number }}">{{ order_items.next_page_number }}</a>
+                          </li>
+                          <li class="page-item">
+                              <a class="page-link" href="?page={{ order_items.paginator.num_pages }}">&raquo;</a>
+                          </li>
+                      {% endif %}
+                  </ul>
+                </nav>
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+{% endblock %}

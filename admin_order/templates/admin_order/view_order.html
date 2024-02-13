@@ -1,0 +1,78 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}View Order{% endblock %}
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>View Order</h2>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Order Management</a></li>
+                <li class="breadcrumb-item"><a href="#">View Order</a></li>
+              </ol>
+            </nav>
+        </div>
+        <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">View Order</h4>
+                <div class="table-responsive">
+                  <table class="table" border="1" style="border-color: #5050503f; border-radius: 18px;">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Order Date</th>
+                            <th>Product</th>
+                            <th>Size</th>
+                            <th>Quantity</th>
+                            <th>Subtotal</th>
+                            <th>Order Status</th>
+                            <th>Payment Method</th>
+                            <th>Payment Status</th>
+                            <th style="text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order_items %}
+                        <tr>
+                            <td><img src="{{ item.product.thumbnail.url }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: contain; background-color: white;" alt=""></td>
+                            <td>{{ item.order.order_date }}</td>
+                            <td>{{ item.product }}</td>
+                            <td>{{ item.product_variant }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td>{{ item.sub_total }}</td>
+                            <td>
+                              {% if item.order_status.id == 1 %}
+																				<span class="badge rounded-pill bg-warning w-10">{{ item.order_status.status }}</span>
+																			{% elif item.order_status.id == 2 %}
+																				<span class="badge rounded-pill bg-info w-10">{{ item.order_status.status }}</span>
+																			{% elif item.order_status.id == 3 %}
+																				<span class="badge rounded-pill bg-primary w-10">{{ item.order_status.status }}</span>
+																			{% elif item.order_status.id == 4 %}
+																				<span class="badge rounded-pill bg-success w-10">{{ item.order_status.status }}</span>
+																			{% else %}
+																				<span class="badge rounded-pill bg-danger w-10">{{ item.order_status.status }}</span>
+																			{% endif %}
+                            </td>
+                            <td>{{ item.payment_method }}</td>
+                            <td>{{ item.payment_status }}</td>
+                            <td>
+                              <a href="{% url 'admin_order:change_order_status' item.id %}" class="btn btn-gradient-light btn-sm mx-1">Change Status</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Order Status{% endblock %}
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>Order Status</h2>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Order Management</a></li>
+                <li class="breadcrumb-item active"><a href="#">Manage Oder Status</a></li>
+              </ol>
+            </nav>
+        </div>
+        <a href="{% url 'admin_order:add_order_status' %}" class="btn btn-gradient-info btn-lg mb-3">+ Add Status</a>
+        <a href="{% url 'admin_order:unlisted_order_status' %}" class="btn btn-gradient-dark btn-lg mb-3 mx-2">Unlisted Statuses</a>
+        <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Available Statuses</h4>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Color</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for status in statuses %}
+                            <tr>
+                                <td>{{ status.status }}</td>
+                                <td>{{ status.color }}</td>
+                                <td class="text-center">
+                                    <a href="{% url 'admin_order:edit_order_status' status.id %}" class="btn btn-gradient-primary btn-sm mx-2">Edit</a>
+                                    <a href="{% url 'admin_order:unlist_order_status' status.id %}" class="btn btn-gradient-dark btn-sm ">Unlist</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        
+
+                        </tbody>
+                    </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Add Coupon{% endblock %}
+{% block head %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.css" integrity="sha512-bs9fAcCAeaDfA4A+NiShWR886eClUcBtqhipoY5DM60Y1V3BbVQlabthUBal5bq8Z8nnxxiyb1wfGX2n76N1Mw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" integrity="sha512-hvNR0F/e2J7zPPfLC9auFe3/SE0yG4aJCOd/qxew74NN7eyiSKjr7xJJMu1Jy2wf7FXITpWS1E/RY8yzuXN7VA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+{% endblock %}
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>Add Category</h2>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="#">Coupon Management</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Add Coupon</li>
+              </ol>
+            </nav>
+        </div>
+        <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Category Form</h4>
+                <p class="card-description"> Add the code, type, expiry date and amount for your category </p>
+                <form action="" method="post" id="myForm">
+                  {% csrf_token %}
+                  {{ form|crispy }}
+                  <button type="submit" class="btn btn-gradient-info mr-2">Add</button>
+                  <button class="btn btn-gradient-dark mr-2" type="button" onclick="clearForm()">Clear</button>
+                  <a href="{% url 'admin_product_management:coupon' %}" class="btn btn-gradient-light mr-2">Cancel</a>
+              </form>
+              </div>
+            </div>
+          </div>
+        </div>
+</div>
+<script>
+    function clearForm() {
+        document.getElementById("myForm").reset();
+    }
+</script>
+
+{% endblock %}
+
+{% block script %}
+
+
+{% endblock %}

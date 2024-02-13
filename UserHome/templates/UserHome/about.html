@@ -1,0 +1,100 @@
+{% extends 'UserHome/base.html' %}
+{% load static %}
+{% block title %}Shop{% endblock %}
+
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">About Us</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i
+													class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Pages</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">About Us</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start page content-->
+				<section class="py-0 py-lg-4">
+					<div class="container">
+						<h4>Our Story</h4>
+						<hr>
+						<p>Welcome to SoleMate, your go-to destination for stylish and comfortable footwear. Founded in 2024 by our visionary leader <strong class="text-success" style="font-size: 15px;">Fauzudheen Abdul Hameed</strong>, we embarked on a journey to redefine the online shopping experience for shoe enthusiasts. Our commitment to quality and customer satisfaction has made us a trusted name in the industry.</p>
+						<p>At SoleMate, we believe in providing footwear that not only complements your style but also ensures unmatched comfort. Our curated collection is a testament to our dedication to offering the latest trends without compromising on quality.</p>
+						<p>Join us in our quest to make every step a statement. Discover the perfect pair that resonates with your personality and stride confidently into a world of fashion and comfort with SoleMate.</p>
+					</div>
+				</section>
+				<section class="py-4">
+					<div class="container">
+						<h4>Why Choose Us</h4>
+						<hr>
+						<div class="row row-cols-1 row-cols-lg-3">
+							<div class="col d-flex">
+								<div class="card rounded-0 shadow-none w-100">
+									<div class="card-body">
+										<img src="{% static 'User/assets/images/icons/delivery.png' %}" width="60" alt="">
+										<h5 class="my-3">FREE SHIPPING</h5>
+										<p class="mb-0">Enjoy free shipping on all orders. We deliver your favorite pairs right to your doorstep with no additional cost, ensuring a seamless shopping experience.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col d-flex">
+								<div class="card rounded-0 shadow-none w-100">
+									<div class="card-body">
+										<img src="{% static 'User/assets/images/icons/money-bag.png' %}" width="60" alt="">
+										<h5 class="my-3">100% MONEY BACK GUARANTEE</h5>
+										<p class="mb-0">Shop confidently with our 100% money-back guarantee. If you're not satisfied with your purchase, we'll refund your money, no questions asked.</p>
+									</div>
+								</div>
+							</div>
+							<div class="col d-flex">
+								<div class="card rounded-0 shadow-none w-100">
+									<div class="card-body">
+										<img src="{% static 'User/assets/images/icons/support.png' %}" width="60" alt="">
+										<h5 class="my-3">ONLINE SUPPORT 24/7</h5>
+										<p class="mb-0">Experience our dedicated 24/7 online support. Our team is ready to assist you with any queries, ensuring a smooth and enjoyable shopping journey.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<!--end row-->
+					</div>
+				</section>
+				
+				<section class="py-4">
+					<div class="container">
+						<h4>Our Top Brands</h4>
+						<hr>
+						<div class="row row-cols-2 row-cols-sm-2 row-cols-md-4 row-cols-xl-5 g-4">
+							{% for brand in brands %}
+							<div class="col">
+								<div class="card border shadow-none">
+									<div class="card-body">
+										<a href="javscript:;">
+											<img src="{{ brand.image.url }}" class="img-fluid" alt="">
+										</a>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+				</section>
+				<!--end start page content-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		{% endblock %}

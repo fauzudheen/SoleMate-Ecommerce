@@ -1,0 +1,472 @@
+{% load static %}
+{% load static %}
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!--favicon-->
+    <link rel="icon" href="{% static 'User/assets/images/favicon-32x32.png' %}" type="image/png" />
+    <!--plugins-->
+    <link href="{% static 'User/assets/plugins/OwlCarousel/css/owl.carousel.min.css' %}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/7.4.47/css/materialdesignicons.min.css" integrity="sha512-/k658G6UsCvbkGRB3vPXpsPHgWeduJwiWGPCGS14IQw3xpr63AEMdA8nMYG2gmYkXitQxDTn6iiK/2fD4T87qA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link href="{% static 'User/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css' %}" rel="stylesheet" />
+    <!-- loader-->
+    <!-- <link href="{% static 'User/assets/css/pace.min.css' %}" rel="stylesheet" />
+    <script src="{% static 'User/assets/js/pace.min.js' %}"></script> -->
+    <!-- Bootstrap CSS -->
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/boxicons/2.0.7/css/boxicons.min.css">
+    <link href="{% static 'User/assets/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Albert+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+    <link href="{% static 'User/assets/css/app.css' %}" rel="stylesheet">
+    <link href="{% static 'User/unpkg.com/boxicons%402.1.2/css/boxicons.min.css' %}" rel="stylesheet">
+    <link href="{% static 'User/assets/css/icons.css' %}" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	{% block head %}
+	
+	{% endblock %}
+    <title>{% block title %}Default title{% endblock %}</title>
+	{% block style %}
+	
+	{% endblock %}
+	<style>
+        /* Center align the content */
+        .center-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh; /* Adjust the height as needed */
+        }
+  
+        /* Alert messages */
+        .messages {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+  
+        .alert {
+            width: 600px; /* Set width as needed */
+        }
+  
+        /* Add spacing between elements */
+        .content-spacing {
+            margin-bottom: 20px; /* Adjust margin as needed */
+        }
+  
+        @media (max-width: 768px) {
+          .alert {
+              width: 90%; /* Set a percentage width for smaller screens */
+              max-width: 400px; /* Set a maximum width for smaller screens */
+          }
+      }
+  
+      
+    </style>
+	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+</head>
+
+<!-- {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            {% if message.tags == 'success' %}
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    <strong>Success:</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% elif message.tags == 'error' %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Error:</strong> {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </ul>
+{% endif %} -->
+
+<body>
+	<!--wrapper-->
+	<div class="wrapper">
+		<!--start top header wrapper-->
+		<div class="header-wrapper">
+			<div class="top-menu">
+				<div class="container">
+					<nav class="navbar navbar-expand">
+						<div class="shiping-title d-none d-sm-flex">Welcome to our store!</div>
+						<ul class="navbar-nav ms-auto d-none d-lg-flex">
+							<li class="nav-item"><a class="nav-link" href="{% url 'user_profile:order_tracking' %}">Track Order</a>
+							</li>
+							<li class="nav-item"><a class="nav-link" href="{% url 'about' %}">About</a>
+							</li>
+							<li class="nav-item"><a class="nav-link" href="#">INR</a>
+							</li>
+						</ul>
+						<ul class="navbar-nav">
+							<li class="nav-item dropdown">
+								<a class="nav-link dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown">
+									<div class="lang d-flex gap-1">
+										<div><i class="flag-icon flag-icon-in me-2"></i>
+										</div>
+										<div><span>INDIA</span>
+										</div>
+									</div>
+								</a>
+								
+							</li>
+						</ul>
+					</nav>
+				</div>
+			</div>
+			<div class="header-content bg-success">
+				<div class="container">
+					<div class="row align-items-center gx-4">
+						<div class="col-auto">
+							<div class="d-flex align-items-center gap-3">
+								<div class="mobile-toggle-menu d-inline d-xl-none" data-bs-toggle="offcanvas"
+									data-bs-target="#offcanvasNavbar">
+									<i class="bx bx-menu"></i>
+								</div>
+								<div class="logo">
+									<a href="{% url 'UserHome' %}">
+										<img src="{% static 'User/assets a/images/brand-logo.png' %}" class="logo-icon" style="width: 200px;" alt="" />
+									</a>
+								</div>
+							</div>
+						</div>
+						<div class="col-12 col-xl order-4 order-xl-0">
+							<form action="{% url 'shop' %}" method="get">
+								<div class="input-group flex-nowrap pb-3 pb-xl-0">
+									<input type="text" name="q" class="form-control w-100 border-dark border border-3 rounded" placeholder="Search for Products, Category, Brand or Color">
+									<button class="btn btn-dark btn-ecomm border-3 rounded ms-1" type="submit">Search</button>
+								</div>
+							</form>
+						</div>
+						<div class="col-auto d-none d-xl-flex">
+							<div class="d-flex align-items-center gap-3">
+								<div class="fs-1 text-content"><i class='bx bx-headphone text-white' style="font-size: 2rem;"></i></div>
+								<div class="">
+									<p class="mb-0 text-content text-white ms-3">CALL US NOW</p>
+									<h5 class="mb-0 text-white" style="font-size: 1rem;">+91 906124XXXX</h5>
+								</div>
+							</div>
+						</div>
+						<div class="col-auto ms-auto">
+							<div class="top-cart-icons">
+								<nav class="navbar navbar-expand">
+									<ul class="navbar-nav">
+										{% if user.is_authenticated %}
+										<li class="nav-item dropdown">
+											<a class="nav-link cart-link dropdown-toggle dropdown-toggle-nocaret" href="#" data-bs-toggle="dropdown">
+												<div class="lang d-flex gap-1">
+													<div>
+														<span style="margin-right: -20px;"><i class='bx bx-chevron-down ms-1 text-white'></i></span>
+														<i style="margin-right: -10px;" class='bx bx-user text-white'></i>
+													</div>
+													<div></div>
+												</div>
+											</a>
+											<ul class="dropdown-menu rounded">
+												<li><a class="dropdown-item fw-bold"><i class="bi bi-person-circle me-1"></i> {{name}}</a></li>
+												<li><hr class="dropdown-divider"></li>
+												<li><a class="dropdown-item fw-bold" href="{% url 'user_profile:account' %}"><i class="bi bi-person-fill me-1"></i> Account</a></li>
+												<li><a class="dropdown-item fw-bold" href="{% url 'user_profile:orders' %}"><i class="bi bi-bag-fill me-1"></i> Orders</a></li>
+												<li><a class="dropdown-item fw-bold" href="{% url 'user_product:wishlist' %}"><i class="bi bi-heart-fill me-1"></i> Wishlist</a></li>
+												<li><a class="dropdown-item fw-bold" href="{% url 'user_product:cart' %}"><i class="bi bi-cart-fill me-1"></i> Cart</a></li>
+												<li><hr class="dropdown-divider"></li>
+												<li><a class="dropdown-item fw-bold" href="{% url 'logout' %}"><i class="bi bi-box-arrow-right me-1"></i> Logout</a></li>
+												
+											</ul>
+											
+										</li>
+										
+										<li class="nav-item"><a href="{% url 'user_product:wishlist' %}" class="nav-link cart-link"><i class='bx bx-heart text-white'></i></a>
+										</li>
+										<li class="nav-item">
+											<a href="{% url 'user_product:cart' %}" class="nav-link position-relative cart-link">	<span class="alert-count">{{ cart_no }}</span>
+												<i class='bi bi-cart me-1 text-white'></i>
+											</a>
+										</li>
+										{% else %}
+										<li>
+											<a class="nav-item text-white ms-5 me-3" style="font-size: 1.2em; padding-top: 5px; display: block;" href="{% url 'login' %}" class="nav-link cart-link text-white"><i></i> Login</a>
+										</li>
+										<li>
+											<a class="nav-item text-white mx-2" style="font-size: 1.2em; margin-top: 5px; display: block;" href="{% url 'signup' %}" class="nav-link cart-link text-white"><i></i> Signup</a>
+										</li>
+										{% endif %}
+									</ul>
+								</nav>
+							</div>
+						</div>
+					</div>
+					<!--end row-->
+				</div>
+			</div>
+			<div class="primary-menu">
+				<nav class="navbar navbar-expand-xl w-100 navbar-dark container mb-0 p-0">
+					<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar">
+					  <div class="offcanvas-header">
+						<div class="offcanvas-logo"><img src="" width="100" alt="">
+						</div>
+						<button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+					  </div>
+					  <div class="offcanvas-body primary-menu">
+						<ul class="navbar-nav justify-content-start flex-grow-1 gap-1">
+						  <li class="nav-item ">
+							<a class="nav-link rounded" href="{% url 'UserHome' %}">Home</a>
+						  </li>
+						  <li class="nav-item">
+							<a class="nav-link rounded" href="{% url 'shop' %}">Shop</a>
+						  </li>
+						  <li class="nav-item">
+							<a class="nav-link  rounded" href="{% url 'about' %}">About</a>
+						  </li>
+						</ul>
+					  </div>
+					</div>	
+				  </nav>
+			</div>
+		</div>
+		<!--end top header wrapper-->
+
+        {% block content %}
+
+        {% endblock %}
+        
+		<!--start footer section-->
+		<footer>
+			<section class="py-5 border-top bg-light">
+				<div class="container">
+					<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
+						<div class="col">
+							<div class="footer-section1">
+								<h5 class="mb-4 text-uppercase fw-bold">Contact Info</h5>
+								<div class="address mb-3">
+									<h6 class="mb-0 text-uppercase fw-bold">Address</h6>
+									<p class="mb-0">Fauzudheen, Chalissery, Kerala, India</p>
+								</div>
+								<div class="phone mb-3">
+									<h6 class="mb-0 text-uppercase fw-bold">Phone</h6>
+									<p class="mb-0">Mobile : +91-9061245502</p>
+								</div>
+								<div class="email mb-3">
+									<h6 class="mb-0 text-uppercase fw-bold">Email</h6>
+									<p class="mb-0">fauzudheen100@gmail.com</p>
+								</div>
+								<div class="working-days mb-3">
+									<h6 class="mb-0 text-uppercase fw-bold">WORKING DAYS</h6>
+									<p class="mb-0">Mon - FRI / 9:30 AM - 6:30 PM</p>
+								</div>
+							</div>
+						</div>
+						<div class="col">
+							<div class="footer-section2">
+								<h5 class="mb-4 text-uppercase fw-bold">Categories</h5>
+								<ul class="list-unstyled">
+									{% for category in categories %}
+									<li class="mb-1"><a href="javascript:;"><i class='bx bx-chevron-right'></i> {{ category }}</a>
+									</li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+						<div class="col">
+							<div class="footer-section3">
+								<h5 class="mb-4 text-uppercase fw-bold">Popular Tags</h5>
+								<div class="tags-box d-flex flex-wrap gap-2">
+									<a href="javascript:;" class="btn btn-ecomm btn-outline-success rounded">Casuals</a>
+									<a href="javascript:;" class="btn btn-ecomm btn-outline-success rounded">Formals</a>
+									<a href="javascript:;" class="btn btn-ecomm btn-outline-success rounded">Sports</a>
+									<a href="javascript:;" class="btn btn-ecomm btn-outline-success rounded">Puma</a>
+									<a href="javascript:;" class="btn btn-ecomm btn-outline-success rounded">Adidas</a>
+									<a href="javascript:;" class="btn btn-ecomm btn-outline-success rounded">Woodland</a>
+									<a href="javascript:;" class="btn btn-ecomm btn-outline-success rounded">Nike</a>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--end row-->
+				</div>
+			</section>
+
+			<section class="footer-strip text-center py-3 border-top positon-absolute bottom-0 bg-success">
+				<div class="container">
+					<div class="d-flex flex-column flex-lg-row align-items-center gap-3 justify-content-between">
+						<p class="mb-0 text-white">Copyright © 2024. All right reserved.</p>
+						<div class="payment-icon">
+							<div class="row row-cols-auto g-2 justify-content-end">
+								<div class="col">
+									<img src="" alt="" />
+								</div>
+								<div class="col">
+									<img src="" alt="" />
+								</div>
+								<div class="col">
+									<img src="" alt="" />
+								</div>
+								<div class="col">
+									<img src="" alt="" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</footer>
+		<!--end footer section-->
+
+
+		<!--start quick view product-->
+		
+		<!--Start Back To Top Button--> <a href="javaScript:;" class="back-to-top"><i class='bx bxs-up-arrow-alt'></i></a>
+		<!--End Back To Top Button-->
+	</div>
+	<!--end wrapper-->
+	
+	<!-- Bootstrap JS -->
+	<script src="{% static 'User/assets/js/bootstrap.bundle.min.js' %}"></script>
+	<!--plugins-->
+	<script src="{% static 'User/assets/js/jquery.min.js' %}"></script>
+	<script src="{% static 'User/assets/plugins/OwlCarousel/js/owl.carousel.min.js' %}"></script>
+	<script src="{% static 'User/assets/plugins/OwlCarousel/js/owl.carousel2.thumbs.min.js' %}"></script>
+	<script src="{% static 'User/assets/plugins/perfect-scrollbar/js/perfect-scrollbar.js' %}"></script>
+	<!--app JS-->
+	<script src="{% static 'User/assets/js/app.js' %}"></script>
+	<script src="{% static 'User/assets/js/index.js' %}"></script>
+
+
+	<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
+	<!-- ---Add-to-Wishlist-AJAX--- -->
+	<script>
+		$(document).ready(function () {
+			$('.add-to-wishlist-link').click(function (e) {
+				e.preventDefault();
+	
+				var link = $(this);
+	
+				$.ajax({
+					type: 'GET',
+					url: link.attr('href'),
+					dataType: 'json',
+					success: function (data) {
+						if (data.status === 'success') {
+							link.find('i').removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+						} else {
+							alert(data.message);
+						}
+					},
+					error: function () {
+						alert('An error occurred while processing your request.');
+					}
+				});
+			});
+		});
+	</script>
+	
+	<!-- ---Remove-from-Wishlist-AJAX--- -->
+<script>
+	$(document).ready(function () {
+		$('.remove-from-wishlist-link').click(function (e) {
+			e.preventDefault();
+			
+			var $removeLink = $(this);
+
+			$.ajax({
+				type: 'GET',
+				url: $removeLink.attr('href'),
+				dataType: 'json',
+				success: function (data) {
+					if (data.status === 'success') {
+						$removeLink.closest('.wishlist-item').fadeOut(200, function () {
+							$(this).remove();
+						});
+					}
+				},
+				error: function () {
+					alert('An error occurred while processing your request.');
+				}
+			});
+		});
+	});
+	</script>
+	
+<!-- ---Add-to-Cart-AJAX--- -->
+	
+
+
+
+	<!-- ---Remove-from-Cart-AJAX--- -->
+	<script>
+		$(document).ready(function () {
+			$('.remove-from-cart-link').click(function (e) {
+				e.preventDefault();
+	
+				var $removeLink = $(this);
+	
+				$.ajax({
+					type: 'GET',
+					url: $removeLink.attr('href'),
+					dataType: 'json',
+					success: function (data) {
+						if (data.status === 'success') {
+							$removeLink.closest('.cart-item').fadeOut(200, function () {
+								$(this).remove();
+	
+								// Update all instances of total-cart-amount after removal
+								var totalAmountElements = document.querySelectorAll('.total-cart-amount');
+								totalAmountElements.forEach(function (element) {
+									element.textContent = '₹' + data.updated_total_amount;
+								});
+							});
+						}
+					},
+					error: function () {
+						alert('An error occurred while processing your request.');
+					}
+				});
+			});
+		});
+	</script>
+	<!-- Include SweetAlert2 library -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+
+<!-- Your SweetAlert2 Toast configuration -->
+<script>
+    {% if messages %}
+        {% for message in messages %}
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            Toast.fire({
+                icon: "{{ message.tags }}",  // You might need to map Django message tags to SweetAlert2 icons
+                title: "{{ message }}"
+            });
+        {% endfor %}
+    {% endif %}
+</script>
+
+
+	
+
+
+	{% block script %}
+	{% endblock %}
+</body>
+
+
+</html>

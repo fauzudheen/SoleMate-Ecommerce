@@ -1,0 +1,249 @@
+{% extends 'UserHome/base.html' %}
+
+{% block title %}Cart{% endblock %}
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Shop Cart</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Shop</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Shop Cart</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<div class="shop-cart">
+							<div class="row">
+								<div class="col-12 col-xl-8">
+									<div class="shop-cart-list mb-3 p-3">
+										{% for item in cart_items %}
+										<div class="cart-item row align-items-center rounded g-3 my-1 bg-white py-2 shadow">
+												<div class="col-12 col-lg-6 m-0">
+												<div class="d-lg-flex align-items-center gap-3">
+													<div class="cart-img text-center text-lg-start">
+														<img src="{{ item.product.thumbnail.url }}" class="img-fluid rounded" style="width: 130px; height: 130px; object-fit: contain; background-color: white;" alt="">
+													</div>
+													<div class="cart-detail text-center text-lg-start">
+														<p class="mb-1 product-short-name">{{ item.product.brand|upper }}</p>
+													<h6 class="mb-0 fw-bold product-short-title">{{ item.product.name }}</h6>
+														<p class="mb-0" id="product_variant" value="{{ item.product_variant.size }}">Size: <span>{{ item.product_variant.size }}</span>
+														</p>
+														<div class="product-price d-flex align-items-center justify-content-start gap-2 mt-2">
+															{% if item.product.offer %}
+															<div class="h6 fw-bold" style="font-size: 16px;">₹{{ item.product.display_price }}</div>
+															<div class="h6 fw-light fw-bold text-secondary text-decoration-line-through" style="font-size: 14px;">{{ item.product.formatted_price }}</div>
+															<div class="h6 fw-light fw-bold text-success ms-3" style="font-size: 14px;">{{ item.product.offer.percent }}% off</div>
+															{% else %}
+															<div class="h6 fw-bold" style="font-size: 16px;">₹{{ item.product.display_price }}</div>
+															{% endif %}
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-12 col-lg-3">
+												<div class="cart-action text-center">
+													<div class="row">
+														<div class="col-6">
+															<p class="mb-0 mt-1">Quantity</p>
+															<div class="quantity-input">
+																<input type="number" class="quantity form-control rounded form-control-sm" id="quantity" value="{{ item.quantity }}" min="1" data-item-id="{{ item.id }}" data-size="{{ item.product_variant.size }}">
+															</div>
+														</div>
+														
+														<div class="col-6">
+															<div class="subtotal">
+																<p class="mb-0 mt-1">Subtotal</p>
+																<div class="h6 fw-bold" style="font-size: 15px;">₹{{ item.sub_total }}</div>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+											
+											
+											<div class="col-12 col-lg-3">
+												<div class="text-center">
+													<div class="d-flex gap-3 justify-content-center justify-content-lg-end">
+													    <a href="{% url 'user_product:remove_from_cart' item.id %}" class="remove-from-cart-link btn btn-sm btn-outline-danger rounded btn-ecomm"><i class='bx bx-x'></i>Remove</a>
+														{% if item.product.is_added_to_wishlist %}
+															<i class="bi bi-heart-fill text-danger fs-4"></i>
+														{% else %}
+															<a href="{% url 'user_product:add_to_wishlist' item.product.id %}" class="add-to-wishlist-link"><i class="bi bi-heart text-secondary fs-4"></i></a>
+														{% endif %}
+													</div>
+												</div>
+											</div>
+										</div>
+											{% endfor %}
+										<hr>			
+										<div class="d-lg-flex align-items-center gap-2">
+											<a href="{% url 'shop'%}" class="btn btn-dark btn-ecomm rounded"><i class='bx bx-shopping-bag'></i> Continue Shoping</a>
+											<a href="{% url 'user_product:clear_cart'%}" class="btn btn-warning btn-ecomm ms-auto rounded"><i class='bx bx-x-circle'></i> Clear Cart</a>
+											<a href="{% url 'user_product:cart'%}" class="btn btn-primary rounded btn-ecomm"><i class='bx bx-refresh'></i> Update Cart</a>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-xl-4">
+									<div class="checkout-form p-3 bg-white border shadow rounded-3">
+										<div class="card rounded border bg-light shadow mb-3">
+											<div class="card-body">
+												{% if coupon %}
+													<p class="my-3">Applied Coupon: <span class="float-end text-success fw-bold">{{ coupon.code }}</span></p>
+													<p class="my-3 text-primary">Note: If you update the quantity or added a new item to cart, please remember to reapply the coupon.</p>
+													<div class="d-flex justify-content-center">
+														<a href="{% url 'user_product:remove_coupon' %}"><button class="btn btn-danger btn-sm rounded fw-bold" style="font-size: 12px;"><i class='bx bx-x'></i> Remove Coupon</button></a>
+													</div>
+												{% else %}
+												<p class="fs-5">Apply Coupon Code</p>
+												<div class="input-group">
+													<form action="{% url 'user_product:apply_coupon' %}" method="post" class="input-group">
+														{% csrf_token %}
+														<input type="text" name="code" class="form-control rounded" placeholder="Enter discount code" maxlength="20">
+														<button class="btn btn-dark btn-ecomm rounded ms-1" type="submit">Apply</button>
+													</form>
+												</div>
+												{% endif %}
+
+											</div>
+										</div>
+										<br>
+										<div class="card rounded border bg-light mb-0 shadow">
+											<div class="card-body">
+												<p class="mb-2">Total Cart Amount: <span class="float-end total-cart-amount">₹{{ cart.prediscount_cart_total }}</span></p>
+												<p class="mb-0">Discount({{ cart.coupon_percent }}%): <span class="float-end">₹{{ cart.cart_total_discount }}</span></p>
+												<div class="my-3 border-top"></div>
+												<h5 class="mb-0">Order Total: <span class="float-end total-cart-amount">₹{{ cart.total_amount }}/-</span></h5>
+												<div class="my-4"></div>
+												<div class="d-grid"> <a href="{% url 'user_order:checkout_details' cart.id %}" class="btn btn-success rounded btn-ecomm">Proceed to Checkout</a>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--end row-->
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+
+
+		<!-- ---Update quantity AJAX--- -->
+
+		<script>
+			document.addEventListener('DOMContentLoaded', function () {
+				var quantityInputs = document.querySelectorAll('.quantity-input input');
+		
+				quantityInputs.forEach(function (input) {
+					input.addEventListener('change', function (event) {
+						var row = event.target.closest('.cart-action');
+						var itemId = this.getAttribute('data-item-id');
+						var newQuantity = event.target.value;
+		
+						updateQuantity(row, itemId, newQuantity);
+					});
+				});
+		
+				function updateQuantity(row, itemId, newQuantity) {
+					$.ajax({
+						url: '{% url "user_product:update_cart_item_quantity" %}',
+						method: 'POST',
+						data: {
+							'item_id': itemId,
+							'new_quantity': newQuantity,
+							csrfmiddlewaretoken: '{{ csrf_token }}'
+						},
+						success: function (data) {
+							if (data.status === 'success') {
+								// Update the DOM with the updated subtotal within the specific row
+								var subtotalElement = row.querySelector('.subtotal .fw-bold');
+								subtotalElement.textContent = '₹' + data.updated_subtotal;
+								
+								var totalAmountElements = document.querySelectorAll('.total-cart-amount');
+								totalAmountElements.forEach(function (element) {
+									element.textContent = '₹' + data.updated_total_amount;
+								});
+								if (data.updated_total_amount > 3000) {
+									$('p.delivery-charge').text('Orders above ₹3000 have no delivery charge!');
+									$('.city-select').hide();
+								} else {
+									$('p.delivery-charge').text('');
+									$('.city-select').show();
+								}	
+								console.log('Quantity updated successfully');
+							} else {
+								// Handle error, if needed
+								console.log('Error updating quantity');
+							}
+						},
+						error: function () {
+							// Handle error, if needed
+							console.log('Error updating quantity');
+						}
+					});
+				}
+		
+			});
+		
+		</script>
+		
+		<!-- ---Limit-stock-input-AJAX--- -->
+
+		<script>
+			$(document).ready(function(){
+				$('.quantity').change(function(){
+					updateStock($(this));
+				});
+
+				function updateStock(element){
+					var productId = element.data('item-id');
+					var quantity = element.val(); 
+					var size = element.data('size');
+
+					$.ajax({
+						url:'/cart_available_stock/',
+						data: {
+							'product_id' : productId,
+							'quantity' : quantity,
+							'size' : size,
+						},
+						dataType: 'json',
+						success: function(data){
+							if ('available_stock' in data) {
+								var availableStock = data.available_stock;
+								$('.quantity').attr('max', availableStock);
+							} else {
+								console.error('Error retrieving available stock');
+							}
+						},
+						error: function(error) {
+							console.error('AJAX request failed', error);
+						}
+					});
+				}
+			});
+		</script>
+
+
+
+		
+		{% endblock %}

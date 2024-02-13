@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <style>
+        /* Define your invoice styling here */
+        /* Example CSS for invoice styling */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .invoice {
+            width: 80%;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 150px; /* Adjust size as needed */
+        }
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        .invoice-table th, .invoice-table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        .invoice-table th {
+            background-color: #f2f2f2;
+        }
+        .invoice-table td {
+            vertical-align: top;
+        }
+    </style>
+</head>
+<body onload="printSalesReport()">
+    <div class="invoice">
+        <!-- Header with company logo and name -->
+        <div class="header">
+            <img src="{% static 'Admin/assets/images/brand.jpg' %}" class="rounded" style="height: 45px; width: auto;" alt="logo" />
+            <h2>Order Invoice</h2>
+        </div>
+        <!-- Invoice details -->
+        <table class="invoice-table">
+            <tr>
+                <th>Order ID:</th>
+                <td>{{ order_item.tracking_number }}</td>
+            </tr>
+            <tr>
+                <th>Order Date:</th>
+                <td>{{ order_item.order.order_date }}</td>
+            </tr>
+            <tr>
+                <th>Delivery Date:</th>
+                <td>{{ order_item.delivery_date }}</td>
+            </tr>
+            <tr>
+                <th>Product Brand:</th>
+                <td>{{ order_item.product.brand }}</td>
+            </tr>
+            <tr>
+                <th>Product Name:</th>
+                <td>{{ order_item.product.name }}</td>
+            </tr>
+            <tr>
+                <th>Product Size:</th>
+                <td>{{ order_item.product_variant }}</td>
+            </tr>
+            <tr>
+                <th>Quantity:</th>
+                <td>{{ order_item.quantity }}</td>
+            </tr>
+            <tr>
+                <th>Subtotal:</th>
+                <td>₹{{ order_item.sub_total }}</td>
+            </tr>
+            <tr>
+                <th>Payment Method:</th>
+                <td>{{ order_item.payment_method }}</td>
+            </tr>
+            <tr>
+                <th>Payment Status:</th>
+                <td>{{ order_item.payment_status }}</td>
+            </tr>
+            <tr>
+                <th>Order Status:</th>
+                <td>{{ order_item.order_status.status }}</td>
+            </tr>
+        </table>
+        <!-- Shipping address -->
+        <div>
+            <h4>Shipping Address:</h4>
+            <p><strong>Full Name:</strong> {{ order_item.order.address.full_name }}</p>
+            <p><strong>Street Address:</strong> {{ order_item.order.address.street_address }}</p>
+            <p><strong>City:</strong> {{ order_item.order.address.city }}</p>
+            <p><strong>District:</strong> {{ order_item.order.address.district }}</p>
+            <p><strong>State:</strong> {{ order_item.order.address.state }}</p>
+            <p><strong>Pincode:</strong> {{ order_item.order.address.pincode }}</p>
+            <!-- Include other shipping address details as needed -->
+        </div>
+    </div>
+    <script>
+        function printSalesReport() {
+          window.print(); 
+        }
+      </script>
+</body>
+</html>

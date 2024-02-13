@@ -1,0 +1,52 @@
+{% extends 'UserHome/base.html' %}
+
+{% block title %}
+Pending Payment Complete
+{% endblock %}
+
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Pending Payment</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Orders</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Pending Payment Complete</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<div class="card py-3 mt-sm-3">
+							<div class="card-body text-center">
+								<h2 class="h4 pb-3">Thank you for completing the payment!</h2>
+								<p class="fs-sm mb-2 text-success">Your order has been Completed and will be processed as soon as possible.</p>
+								</p>
+								<p class="fs-sm"><u>You can now:</u>
+								</p><a class="btn btn-success rounded mt-3 me-3 fw-bold" href="{% url 'shop' %}">Go back to shopping</a>
+								<a class="btn btn-light rounded mt-3 fw-bold" href="{% url 'user_profile:order_tracking' %}"><i class='bx bx-map'></i>Track order</a>
+							</p><a class="btn btn-dark rounded mt-3 me-3 fw-bold" href="{% url 'user_profile:all_order_items' %}">Orders</a>
+
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		{% endblock %}

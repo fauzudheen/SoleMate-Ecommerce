@@ -1,0 +1,83 @@
+{% extends 'AdminHome/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}Category{% endblock %}
+
+{% block style %}
+
+
+{% endblock %}
+
+{% block content %}
+<div class="main-panel">
+    <div class="content-wrapper">
+        <div class="page-header">
+            <h2>Banner</h2>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="#">Banner Management</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Manage Banner</li>
+                </ol>
+            </nav>
+        </div>
+
+        <a href="{% url 'AdminHome:add_banner' %}" class="btn btn-gradient-info btn-lg mb-3">+ Add Banner</a>
+        
+        <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h4 class="card-title">Banners</h4>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Heading</th>
+                                        <th>Description</th>
+                                        <th>Start Date</th>
+                                        <th>End Date</th>
+                                        <th style="text-align: center;">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for banner in banners %}
+                                    <tr>
+                                        <td ><img src="{{ banner.image.url }}" alt="{{ banner.name }}" style="height: 100px; width : 150px"></td>
+                                        <td>{{ banner.heading }}</td>
+                                        <td>
+                                            <div class="truncated-description">
+                                                {{ banner.description | slice:":12" }}
+                                                {% if banner.description|length > 12 %}
+                                                    <span class="expand-description text-primary">...more</span>
+                                                    <span class="full-description" style="display: none;">
+                                                        {{ banner.description | slice:"12:" }}
+                                                    </span>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                        <td>{{ banner.start_date }}</td>
+                                        <td>{{ banner.end_date }}</td>
+                                        <td>
+                                            <a href="{% url 'AdminHome:edit_banner' banner.id %}" class="btn btn-gradient-primary btn-sm mx-2">Edit</a>
+                                            <a href="{% url 'AdminHome:delete_banner' banner.id %}" class="btn btn-gradient-danger btn-sm">Delete</a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+
+{% endblock %}

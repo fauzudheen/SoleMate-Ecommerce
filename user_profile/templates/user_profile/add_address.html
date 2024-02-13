@@ -1,0 +1,76 @@
+{% extends 'UserHome/base.html' %}
+{% block title %}Add Address{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Add Address</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="user_profile:account:;">Account</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Addresses</li>
+										<li class="breadcrumb-item active" aria-current="page">Add Address</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<h3 class="d-none">Account</h3>
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<form action="" method="post" class="">
+
+										{% csrf_token %}
+									
+										<div class="row">
+											<div class="col-md-6">
+												<!-- First column of form fields -->
+												{{ form.full_name|as_crispy_field }}
+												{{ form.city|as_crispy_field }}
+												{{ form.state|as_crispy_field }}
+												<!-- Add more fields as needed -->
+											</div>
+									
+											<div class="col-md-6">
+												<!-- Second column of form fields -->
+												{{ form.street_address|as_crispy_field }}
+												{{ form.district|as_crispy_field }}
+												{{ form.pincode|as_crispy_field }}
+												<!-- Add more fields as needed -->
+											</div>
+										</div>
+									
+										<div class="row mt-4">
+											<div class="col-md-12 text-center">
+												<!-- Centered submit button -->
+												<button type="submit" class="btn bg-success text-white fw-bold rounded px-43">Save</button>
+											</div>
+										</div>
+									</form>
+									<a href="{% url 'user_profile:account' %}"><button class="btn btn-sm fw-bold bg-dark rounded text-white mx-1" >Back</button></a>
+									
+								</div>	
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+		{% endblock %}

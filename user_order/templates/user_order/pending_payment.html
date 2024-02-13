@@ -1,0 +1,280 @@
+{% extends 'UserHome/base.html' %}
+{% load static %}
+{% block title %}
+Pending Payment
+{% endblock %}
+
+{% block content %}
+		<!--start page wrapper -->
+		<div class="page-wrapper">
+			<div class="page-content">
+				<!--start breadcrumb-->
+				<section class="py-3 border-bottom border-top d-none d-md-flex bg-light">
+					<div class="container">
+						<div class="page-breadcrumb d-flex align-items-center">
+							<h3 class="breadcrumb-title pe-3">Pending Payment</h3>
+							<div class="ms-auto">
+								<nav aria-label="breadcrumb">
+									<ol class="breadcrumb mb-0 p-0">
+										<li class="breadcrumb-item"><a href="javascript:;"><i class="bx bx-home-alt"></i> Home</a>
+										</li>
+										<li class="breadcrumb-item"><a href="javascript:;">Orders</a>
+										</li>
+										<li class="breadcrumb-item active" aria-current="page">Pending Payment</li>
+									</ol>
+								</nav>
+							</div>
+						</div>
+					</div>
+				</section>
+				<!--end breadcrumb-->
+				<!--start shop cart-->
+				<section class="py-4">
+					<div class="container">
+						<div class="shop-cart">
+							<div class="row">
+								<div class="col-12 col-xl-8">
+									<div class="checkout-payment">
+										<div class="card rounded shadow-none border">
+											<div class="card-header border-bottom">
+												<h2 class="h5 my-2">Choose Payment Method</h2>
+											</div>
+											<div class="card-body">
+												<ul class="nav nav-pills mb-3 border rounded p-3" role="tablist">
+													<li class="nav-item" role="presentation">
+														<a class="nav-link active rounded" data-bs-toggle="pill" href="#cash-on-delivery" role="tab" aria-selected="true">
+															<div class="d-flex align-items-center">
+																<div class="tab-icon"><i class='fas fa-money-bill-wave ont-18 me-2'></i>
+																</div>
+																<div class="tab-title">Cash On Delivery</div>
+															</div>
+														</a>
+													</li>
+													<li class="nav-item" role="presentation">
+														<a class="nav-link rounded" data-bs-toggle="pill" href="#razorpay" role="tab" aria-selected="false">
+															<div class="d-flex align-items-center">
+																<div class="tab-icon"><i class='bx bx-mobile font-18 me-1'></i>
+																	
+																</div>
+																<div class="tab-title">Razor Pay</div>
+															</div>
+														</a>
+													</li>
+													<li class="nav-item" role="presentation">
+														<a class="nav-link rounded" data-bs-toggle="pill" href="#paypal-payment" role="tab" aria-selected="false">
+															<div class="d-flex align-items-center">
+																<div class="tab-icon"><i class='bx bx-wallet font-18 me-1'></i>
+																</div>
+																<div class="tab-title">Wallet</div>
+															</div>
+														</a>
+													</li>
+													
+													<!-- <li class="nav-item" role="presentation">
+														<a class="nav-link rounded" data-bs-toggle="pill" href="#net-banking" role="tab" aria-selected="false">
+															<div class="d-flex align-items-center">
+																<div class="tab-icon"><i class='bx bx-mobile font-18 me-1'></i>
+																</div>
+																<div class="tab-title">Net Banking</div>
+															</div>
+														</a>
+													</li> -->
+												</ul>
+												<div class="tab-content" id="pills-tabContent">
+													<div class="tab-pane fade show active" id="cash-on-delivery" role="tabpanel">
+														<div class="p-3 border rounded">
+															{% if cod %}
+															<form method="post" action="{% url 'user_order:pending_cod_payment' %}">
+																{% csrf_token %}															
+																<input type="hidden" name="payment_method" value="Cash On Delivery">
+																<div class="row">
+																	<div class="col-md-12">
+																		<div class="m-4 d-flex justify-content-center">
+																			<button type="submit" class="btn btn-success rounded fw-bold">Confirm Payment</button>
+																		</div>
+																	</div>
+																</div>
+															</form>
+															{% else %}
+														<div class="d-flex justify-content-center align-items-center">
+															<p class="text-danger">Sorry. There is no Cash On Delivery option for orders above ₹1000!</p>
+														</div>
+															{% endif %}
+															
+														</div>
+													</div>
+													<div class="tab-pane fade show" id="razorpay" role="tabpanel">	
+														<div class="p-3 border rounded">
+														<div class="mb-3">
+															<p class="mb-0">Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website to view details of your order.</p>
+														</div>
+														<div class="m-4 d-flex justify-content-center">
+															<button id="rzp-button1" class="btn btn-primary rounded fw-bold">Pay with Razorpay</button>
+														</div>
+													</div>
+													</div>
+													<div class="tab-pane fade" id="paypal-payment" role="tabpanel">
+														<div class="p-3 border rounded">
+															<div class="m-4 d-flex justify-content-center">
+																<h6>Your Wallet Balance:</h6>
+																<div class="form-check form-check-inline">
+																	<h5>₹{{ wallet.balance }}</h5>
+																</div>
+															</div>
+															<form action="{% url 'user_order:pending_wallet_payment' %}" method="post">
+																{% csrf_token %}
+																<div class="mb-3">
+																	<div class="m-4 d-flex justify-content-center">
+																		<button type="submit" class="btn btn-warning rounded fw-bold text-white">Pay with Wallet</button>
+																	</div>	
+																</div>
+															</form>
+														</div>
+													</div>
+													<div class="tab-pane fade" id="net-banking" role="tabpanel">
+														<div class="p-3 border rounded">
+															<div class="mb-3">
+																<p>Select your Bank</p>
+																<select class="form-select rounded-0" aria-label="Default select example">
+																	<option selected>--Please Select Your Bank--</option>
+																	<option value="1">Bank Name 1</option>
+																	<option value="2">Bank Name 2</option>
+																	<option value="3">Bank Name 3</option>
+																</select>
+															</div>
+															<div class="mb-3">
+																<div class="d-block"> <a href="javscript:;" class="btn btn-light rounded-0"><i class='bx bxl-paypal'></i>Login to my Paypal</a>
+																</div>
+															</div>
+															<div class="mb-3">
+																<p class="mb-0">Note: After clicking on the button, you will be directed to a secure gateway for payment. After completing the payment process, you will be redirected back to the website to view details of your order.</p>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-xl-4">
+									<div class="order-summary">
+										<div class="card rounded-0">
+											<div class="card-body">
+												<div class="card border shadow-none  bg-light p-2">
+													<div class="card-body rounded">
+														<p class="fs-5">Order Amount</p>
+													</div>
+													<div class="card rounded border mb-0 shadow-none">
+														<div class="card-body">
+															<h5 class="mb-0">Order Total: <span class="float-end total-cart-amount">₹{{ order_item.sub_total }}/-</span></h5>
+															</div>
+														</div>
+													</div>
+												</div>
+												
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--end row-->
+						</div>
+					</div>
+				</section>
+				<!--end shop cart-->
+			</div>
+		</div>
+		<!--end page wrapper -->
+
+		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+		<script>
+			$(document).ready(function () {
+				// Declare Razorpay object outside click event
+				var rzp1;
+		
+				$('#rzp-button1').click(function (e) { 
+					e.preventDefault();
+					console.log('before ajax')
+					var token=$("[name='csrfmiddlewaretoken']").val();
+					$.ajax({
+					type: "GET",
+					url: "{% url 'user_order:pending_razorpay_checkout' %}", 
+					headers: { "X-CSRFToken": "{{ csrf_token }}" },
+					success: function (response) {
+						console.log(response)
+						// Use response.amount instead of response.total_amount
+						var options = {
+							"key": "rzp_test_KJbdXhXuePu5Ur",
+							"amount":parseInt(response.total_amount) ,
+							"currency": "INR",
+							"name": "SoleMate",
+							"description": "Test Transaction",
+							"image": "{% static 'Admin/assets/images/brand.jpg' %}",
+							"handler": function (responseb){
+							console.log(responseb)
+								data={
+								"razorpay_payment_id":responseb.razorpay_payment_id,
+								csrfmiddlewaretoken:token
+								}
+								
+								$.ajax({
+								type: "POST",
+								url: "{% url 'user_order:pending_razorpay_payment' %}",
+								headers: { "X-CSRFToken": "{{ csrf_token }}" },
+								data: data,
+								
+								success: function(data) {
+									console.log(data)
+
+									// Replace the entire body content with the loaded HTML
+									$('body').html(data);
+								},
+								});
+								
+							},
+							"prefill": {
+								"name": response.name,
+								"email": response.email,
+								"contact": 9061245502,
+							},
+							"theme": {
+								"color": "#3399cc"
+							}
+						};
+						// Initialize Razorpay object
+						rzp1 = new Razorpay(options);
+						rzp1.on('payment.failed', function (response){
+
+							data={
+								csrfmiddlewaretoken:token
+								}
+								
+							$.ajax({
+								type: "POST",
+								url: "{% url 'user_order:pending_payment_pending' %}",
+								headers: { "X-CSRFToken": "{{ csrf_token }}" },
+								data: data,
+								
+								success: function(data) {
+									console.log(data)
+									$('body').html(data);
+								},
+								});
+
+						});
+						// Open Razorpay checkout
+						rzp1.open();
+					}
+					});
+				});
+		
+				// You may want to handle cases where the user closes the checkout without completing the payment
+				$(window).on('unload', function(){
+					if (rzp1) {
+					rzp1.close();
+					}
+				});
+		   });
+		</script>
+
+		{% endblock %}
