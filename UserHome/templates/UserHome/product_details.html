@@ -9,53 +9,93 @@
 
 	<style>
 
-		@media (max-width: 767px) {
+		@media (max-width: 992px) {
 			.thumbnail-images {
-				/* Adjust the width of thumbnail images for smaller screens */
 				width: 100%;
-				overflow-x: auto; /* Add horizontal scrolling for smaller screens */
-				white-space: nowrap; /* Prevent line breaks */
+				overflow-x: auto; 
+				white-space: nowrap; 
 			}
 		
 			.thumbnail-container {
-				/* Adjust the width and margin of thumbnail containers for smaller screens */
-				width: 50px;
+				width: 120px;
 				margin-right: 10px;
 			}
 		
 			.main-image-container {
-				/* Adjust the width of the main image container for smaller screens */
 				height: auto;
-				max-width: 100%; /* Make the main image container responsive */
+				max-width: 100%; 
 			}
 		
-			/* Add more responsive styles as needed */
 		}
-		/* Custom CSS for styling */
-		.small-images {
-			width: 50px; 
-			height: 50px;
-			display: flex;
-			flex-direction: column;
-			align-items: center;
+
+		@media (max-width: 767px) {
+			.thumbnail-images {
+				width: 100%;
+				overflow-x: auto;
+				white-space: nowrap; 
+			}
+		
+			.thumbnail-container {
+				width: 90px;
+				margin-right: 10px;
+			}
+		
+			.main-image-container {
+				height: auto;
+				max-width: 100%;
+			}
+		
 		}
-	
-		.small-thumbnail {
-			
-			margin-bottom: 10px; /* Adjust the margin as needed */
-			margin-right: 30px;
-			cursor: pointer; /* Add cursor pointer for better user experience */
+		@media (max-width: 576px ) {
+			#sm-image{
+				width: 80px;
+				margin-right: 10px;
+			}
+			#bg-image{
+				width: 320px;
+			}
+			.thumbnail-images {
+				overflow-x: auto;
+				white-space: nowrap; 
+			}
+		
+			.thumbnail-container {
+				margin-right: 10px;
+			}
+		
+			.main-image-container {
+				height: auto;
+			}
+			.small-images {
+				width: 20%; 
+				height: auto;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+			}
+		
+			.small-thumbnail {
+				margin-bottom: 10px;
+				cursor: pointer;
+			}
 		}
-	
-		.full-size-thumbnail img {
-			width: 100%; /* Make the image take the full width of its container */
-			height: auto; /* Maintain the aspect ratio */
+		
+		@media (max-width: 440px ) {
+			#sm-image{
+				width: 80px;
+			}
+			#bg-image{
+				width: 270px;
+			}
 		}
-	</style>
-	
-	<style>
-	  .image { width: 300px; float: left; }
-	  .clear { clear: both; }
+		@media (max-width: 280px ) {
+			#sm-image{
+				width: 40px;
+			}
+			#bg-image{
+				width: 200px;
+			}
+		}
 	</style>
 
 	<style>
@@ -118,7 +158,7 @@
 						<div class="product-detail-card">
 							<div class="product-detail-body">
 								<div class="row g-0">
-									<div class="col-12 col-lg-1">
+									<div class="col-12 col-lg-1 col-md-3 col-sm-3" id="sm-image">
 										<!-- Thumbnails aligned vertically on the left -->
 										<div class="thumbnail-images">
 											<div class="row g-3">
@@ -141,7 +181,7 @@
 										</div>
 									</div>
 									
-									<div class="col-12 col-lg-4">
+									<div class="col-12 col-lg-4 col-md-9 col-sm-9" id="bg-image">
 										<!-- Big main image on the right -->
 										<div class="product-images">
 											<div class="main-image-container border rounded pt-4 px-1 mx-1" style="height: 460px;">
