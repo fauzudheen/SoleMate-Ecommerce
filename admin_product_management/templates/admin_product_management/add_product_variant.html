@@ -35,7 +35,8 @@
                       <div class="default-fields">
                           <!-- Default size and quantity fields -->
                           <div class="inline-fields">
-                              {{form|crispy}}
+                              {{form.size|as_crispy_field}}
+                              {{form.quantity|as_crispy_field}}
                           </div>
                       </div>
                   </div>

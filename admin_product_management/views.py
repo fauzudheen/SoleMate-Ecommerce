@@ -222,21 +222,22 @@ def delete_image(request, image_id):
 
 @login_required(login_url='AdminHome:login')
 def add_product_variant(request, product_id):
-    form = ProductVariantForm()
     product = Product.objects.get(id=product_id)
     if request.method == 'POST':
         form = ProductVariantForm(request.POST)
-        if form:
-            product = product
+        if form.is_valid():
             size = form.cleaned_data['size']
             quantity = form.cleaned_data['quantity']
             existing_variant = ProductVariant.objects.filter(size=size, product=product).exists()
             if existing_variant:
-                ProductVariant.objects.filter(size=size,product=product).update(quantity=F('quantity')+quantity)
+                ProductVariant.objects.filter(size=size, product=product).update(quantity=F('quantity') + quantity)
             else:
-                form.instance.product = product
-                form.save()
+                instance = form.save(commit=False)
+                instance.product = product 
+                instance.save()
             return redirect(reverse('admin_product_management:edit_product', kwargs={'product_id': product_id}))
+    else:
+        form = ProductVariantForm()
 
     return render(request, 'admin_product_management/add_product_variant.html', {'form': form, 'product': product})
 
@@ -248,7 +249,18 @@ def edit_product_variant(request, product_variant_id):
     if request.method == 'POST':
         form = ProductVariantForm(request.POST, request.FILES, instance=product_variant)
         if form.is_valid():
-            form.save()
+            size = form.cleaned_data['size']
+            quantity = form.cleaned_data['quantity']
+            existing_variant = ProductVariant.objects.filter(size=size, product=product).exists()
+            if existing_variant:
+                variant = ProductVariant.objects.get(size=size, product=product)
+                variant.quantity += quantity
+                variant.save()
+                return redirect ('admin_product_management:delete_product_variant', product_variant_id)
+            else:
+                instance = form.save(commit=False)
+                instance.product = product 
+                instance.save()
         return redirect(reverse('admin_product_management:edit_product', kwargs={'product_id': product_id}))
 
     else:

@@ -24,7 +24,8 @@
                 <p class="card-description"> Edit the heading, image and description of your Product Variant </p>
                 <form class="forms-sample" method="post" id="myForm" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ form|crispy }}
+                    {{form.size|as_crispy_field}}
+                    {{form.quantity|as_crispy_field}}
                                     
                     <button type="submit" class="btn btn-gradient-info mr-2">Save</button>
                     <button class="btn btn-gradient-dark mr-2" type="button" onclick="clearForm()">Default</button>

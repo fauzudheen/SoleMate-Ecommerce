@@ -30,7 +30,7 @@ class ProductForm(forms.ModelForm):
 class ProductVariantForm(forms.ModelForm):
     class Meta:
         model = ProductVariant
-        fields = '__all__'
+        exclude = ['product']
        
 
 
