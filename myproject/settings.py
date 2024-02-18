@@ -104,7 +104,7 @@ DATABASES = {
 }
 
 # settings.py
-SESSION_COOKIE_AGE = 86400  # 1 day in seconds (60 seconds * 60 minutes * 24 hours)
+SESSION_COOKIE_AGE = 86400  # 1 day in seconds
 
 
 
