@@ -1,15 +1,15 @@
 {% for product in products %}
 <div class="col">
     <div class="card">
-        <div class="position-relative overflow-hidden" style="width: 100%; height: 300px;">
+        <div class="position-relative overflow-hidden rounded">
             {% if request.user.is_authenticated %}
             <div class="add-cart position-absolute top-0 end-0 mt-3 me-3">
                 <a href="javascript:;"><i class='bx bx-shopping-bag'></i></a>
             </div>
             {% endif %}
-            <div class="image-wrapper" style="width: 280px; height: 320px; overflow: hidden;">
-                <a href="{% url 'product_details' product.id %}">
-                    <img src="{{ product.thumbnail.url }}" class="img-fluid rounded" style="width: 100%; height: 100%; object-fit: contain; background-color: white;" alt="{{ product.thumbnail.url }}">
+            <div class="image-wrapper rounded" style="overflow: hidden;">
+                <a href="{% url 'product_details' product.id %}" class="rounded">
+                    <img src="{{ product.thumbnail.url }}" class="img-fluid rounded" style="width: 100%; height: 30vh; object-fit: contain; background-color: white;" alt="{{ product.thumbnail.url }}">
                 </a>
             </div>
         </div>
