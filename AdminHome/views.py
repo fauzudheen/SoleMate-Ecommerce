@@ -132,7 +132,10 @@ def unblock_user(request, user_id):
     user_to_be_unblocked.save()
     return redirect('AdminHome:users')
 
-
+def delete_user(request, user_id):
+    user = UserProfile.objects.get(id=user_id)
+    user.delete()
+    return redirect('AdminHome:users')
 
 def daily_sales_page(request):
     return render(request,'AdminHome/daily_sales.html')

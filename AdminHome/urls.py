@@ -10,6 +10,7 @@ urlpatterns = [
     path('admin-users/', views.users, name='users'),
     path('admin-user/block/<int:user_id>/', views.block_user, name='block_user'),
     path('admin-user/unblock/<int:user_id>/', views.unblock_user, name='unblock_user'),
+    path('admin-user/delete/<int:user_id>/', views.delete_user, name='delete_user'),
 
     path('admin-banner/', views.banner, name='banner'),
     path('admin-banner/add', views.add_banner, name='add_banner'),
