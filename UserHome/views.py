@@ -320,7 +320,7 @@ def filter_product(request):
             max_price = int(max_price)
             products = [product for product in products if min_price <= product.display_price <= max_price]
         except ValueError:
-            print("Invalid min_price or max_price values")
+            pass
 
     if len(discounts) > 0:
         min_discount = 100
@@ -343,17 +343,11 @@ def cart_available_stock(request):
         quantity = request.GET.get('quantity')
         size = request.GET.get('size')
 
-        print(cart_item_id)
-        print(quantity)
-        print(size)
-
         cart_item = CartItem.objects.get(id=cart_item_id)
         product = cart_item.product
         variant = ProductVariant.objects.get(product=product, size=size)
         
-        print(cart_item)
         available_stock = variant.quantity
-        print(available_stock)
 
         return JsonResponse({'available_stock': available_stock})
     else:
@@ -366,15 +360,10 @@ def product_details_available_stock(request):
         quantity = request.GET.get('quantity')
         size = request.GET.get('size')
 
-        print(product_id)
-        print(quantity)
-        print(size)
-
         product = Product.objects.get(id=product_id)
         variant = ProductVariant.objects.get(product=product, size=size)
         available_stock = variant.quantity
 
-        print(available_stock)
 
         return JsonResponse({'available_stock': available_stock})
     else:

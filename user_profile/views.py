@@ -232,7 +232,6 @@ def razorpay_wallet(request):
 
 
 def razorpay_add_to_wallet(request):
-    print("razorpay_add_to_wallet called")
     if request.method == 'POST':
         amount = request.POST['amount']
         wallet = Wallet.objects.get(user=request.user)

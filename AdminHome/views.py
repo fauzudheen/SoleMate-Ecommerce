@@ -23,8 +23,6 @@ from django.db.models import Count, Q
 def home(request):
     admin = request.user
 
-    print("admin", admin)
-
     if not admin.is_superuser:
         return redirect('UserHome')
 

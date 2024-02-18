@@ -110,7 +110,6 @@ def change_order_status(request, order_item_id):
             order_item.qty_update_on_cancel()
             order_item.add_to_sales_on_deliver()
             order_item.update_delivery_date()
-            print("change_order_status called")
             return redirect('admin_order:order_items')
 
     return render(request, 'admin_order/change_order_status.html', {'form': form})

@@ -202,7 +202,6 @@ def delete_product(request, product_id):
 @login_required(login_url='AdminHome:login')
 def deleted_product(request):
     products = Product.objects.filter(is_listed=False)
-    print(products)
     return render(request, 'admin_product_management/deleted_product.html', {'products': products})
 
 def restore_product(request, product_id):
@@ -226,17 +225,12 @@ def add_product_variant(request, product_id):
     form = ProductVariantForm()
     product = Product.objects.get(id=product_id)
     if request.method == 'POST':
-        print("post")
         form = ProductVariantForm(request.POST)
-        print(form.errors)
-        print(form.non_field_errors())
         if form:
-            print("Valid")
             product = product
             size = form.cleaned_data['size']
             quantity = form.cleaned_data['quantity']
             existing_variant = ProductVariant.objects.filter(size=size, product=product).exists()
-            print(existing_variant)
             if existing_variant:
                 ProductVariant.objects.filter(size=size,product=product).update(quantity=F('quantity')+quantity)
             else:
