@@ -88,23 +88,24 @@
 				width: 270px;
 			}
 		}
-		@media (max-width: 280px ) {
-			#sm-image{
-				width: 40px;
+		@media (max-width: 390px ) {
+			#sm-img-col{
+				width: 20px;
 			}
 			#bg-image{
-				width: 200px;
+				width: 65%;
 			}
 		}
 	</style>
 
 	<style>
+	@media (min-width: 992px ) {
 		#zoom-image-container {
 			position: absolute;
 			top: 280px;
 			right: 50px;
-			left: 580px;
-			width: 700px;
+			left: 44%;
+			width: 56%;
 			height: 380px;
 			overflow: hidden;
 			opacity: 0;
@@ -123,7 +124,12 @@
 			transform: scale(3);
 			transition: transform 0.3s;
 		}
-
+	}
+	@media (max-width: 992px ) {
+		#zoom-image-container {
+			display: none;
+		}
+	}
 	</style>
 
 
@@ -161,11 +167,11 @@
 									<div class="col-12 col-lg-1 col-md-3 col-sm-3" id="sm-image">
 										<!-- Thumbnails aligned vertically on the left -->
 										<div class="thumbnail-images">
-											<div class="row g-3">
+											<div class="row g-3" id="sm-img-col">
 												<div class="slick-carousel">
 													{% for image in product.images %}
-														<div class="col-12">
-															<div class="thumbnail-container border mb-1 rounded p-2">
+														<div class="col-12" >
+															<div class="sm-image thumbnail-container border mb-1 rounded p-2">
 																<img
 																	src="{{ image.images.url }}"
 																	class="img-fluid ml-5 border-thumbnail"

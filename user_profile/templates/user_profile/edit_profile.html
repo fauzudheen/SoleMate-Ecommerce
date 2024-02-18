@@ -54,13 +54,16 @@
 														<form action="" method="post">
 															{% csrf_token %}
 															{{ form|crispy }}
-															<div class="row mt-4">
+															<div class="row mt-4 text-center">
 																<div class="col-md-12 text-center">
-																	<a href="{% url 'user_profile:edit_profile' %}"><button class="btn btn-md fw-bold bg-primary rounded text-white mx-1" >Save</button></a>
+																	<a href="{% url 'user_profile:edit_profile' %}"><button class="btn btn-sm fw-bold bg-primary rounded text-white mx-1 mb-2" >Save</button></a>
 																</div>
 															</div>
 														</form>
-														<a href="{% url 'user_profile:account' %}"><button class="btn btn-sm fw-bold bg-dark rounded text-white mx-1" >Back</button></a>
+														<div class="text-center">
+															<a href="{% url 'user_profile:account' %}"><button class="btn btn-sm fw-bold bg-dark rounded text-white mx-1">Back</button></a>
+														</div>
+														
 													</ul>
 											</div>
 										</div>

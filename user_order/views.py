@@ -85,7 +85,7 @@ def checkout_payment(request):
             charge_id = request.session['charge_id']
             delivery_charge = DeliveryCharge.objects.get(id=charge_id)
         except:
-            messages.warning(request, "Select a city and click Apply for computing delivery charge")
+            messages.warning(request, "Select a city and click Apply in the bottom for computing delivery charge")
             return redirect('user_order:checkout_details', cart_id=cart.id)
 
     wallet = Wallet.objects.get(user=request.user)

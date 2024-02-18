@@ -164,6 +164,9 @@ def cancel_order_item(request, order_item_id):
         wallet.balance += order_item.sub_total
         wallet.save()
         wallet.update_transaction(order_item.sub_total, type="Refund")
+        messages.success(request, "Order Item cancelled and amount refunded to your wallet.")
+    else:
+        messages.success(request, "Order Item cancelled")
     order_item.order_status = OrderStatus.objects.get(status='Cancelled')
     order_item.save()
     order_item.qty_update_on_cancel()

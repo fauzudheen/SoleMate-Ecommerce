@@ -32,16 +32,60 @@
 	
 	{% endblock %}
 	<style>
-        /* Center align the content */
+		h2#swal2-title{
+			font-size: 16px;
+		}
+		
+		@media screen and (max-width: 992px) {
+			h2#swal2-title {
+				font-size: 14px;
+			}
+			.swal2-icon{
+				font-size: 13px;
+			}
+		}
+		
+		
+		@media screen and (max-width: 768px) {
+			h2#swal2-title {
+				font-size: 12px;
+			}
+			.swal2-icon{
+				font-size: 11px;
+			}
+		}
+		
+		@media screen and (max-width: 576px) {
+			h2#swal2-title {
+				font-size: 10px;
+			}
+			.swal2-icon{
+				font-size: 9px;
+			}
+		}		
+	</style>
+	<style>
+		@media screen and (max-width: 768px) {
+			.footer-text {
+				font-size: 14px;
+			}
+		}
+		
+		@media screen and (max-width: 576px) {
+			.footer-text {
+				font-size: 12px;
+			}
+		}
+	</style>
+	<style>
         .center-content {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh; /* Adjust the height as needed */
+            height: 100vh; 
         }
   
-        /* Alert messages */
         .messages {
             position: fixed;
             top: 20px;
@@ -51,22 +95,20 @@
         }
   
         .alert {
-            width: 600px; /* Set width as needed */
+            width: 600px; 
         }
   
-        /* Add spacing between elements */
         .content-spacing {
-            margin-bottom: 20px; /* Adjust margin as needed */
+            margin-bottom: 20px; 
         }
   
         @media (max-width: 768px) {
           .alert {
-              width: 90%; /* Set a percentage width for smaller screens */
-              max-width: 400px; /* Set a maximum width for smaller screens */
+              width: 90%; 
+              max-width: 400px;
           }
       }
   
-      
     </style>
 	<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 </head>
@@ -239,34 +281,34 @@
         {% endblock %}
         
 		<!--start footer section-->
-		<footer>
+		<footer class="footer-text">
 			<section class="py-5 border-top bg-light">
 				<div class="container">
 					<div class="row row-cols-1 row-cols-lg-2 row-cols-xl-4">
 						<div class="col">
 							<div class="footer-section1">
-								<h5 class="mb-4 text-uppercase fw-bold">Contact Info</h5>
+								<p class="mb-4 text-uppercase fw-bold text-dark">Contact Info</p>
 								<div class="address mb-3">
-									<h6 class="mb-0 text-uppercase fw-bold">Address</h6>
-									<p class="mb-0">Fauzudheen, Chalissery, Kerala, India</p>
+									<p class="mb-0 text-uppercase fw-bold text-dark">Address</p>
+									<p class="mb-0">Fauzudheen, Changaramkulam, Kerala, India</p>
 								</div>
 								<div class="phone mb-3">
-									<h6 class="mb-0 text-uppercase fw-bold">Phone</h6>
+									<p class="mb-0 text-uppercase fw-bold text-dark">Phone</p>
 									<p class="mb-0">Mobile : +91-9061245502</p>
 								</div>
 								<div class="email mb-3">
-									<h6 class="mb-0 text-uppercase fw-bold">Email</h6>
+									<p class="mb-0 text-uppercase fw-bold text-dark">Email</p>
 									<p class="mb-0">fauzudheen100@gmail.com</p>
 								</div>
 								<div class="working-days mb-3">
-									<h6 class="mb-0 text-uppercase fw-bold">WORKING DAYS</h6>
+									<p class="mb-0 text-uppercase fw-bold text-dark">WORKING DAYS</p>
 									<p class="mb-0">Mon - FRI / 9:30 AM - 6:30 PM</p>
 								</div>
 							</div>
 						</div>
 						<div class="col">
 							<div class="footer-section2">
-								<h5 class="mb-4 text-uppercase fw-bold">Categories</h5>
+								<p class="mb-4 text-uppercase fw-bold text-dark">Categories</p>
 								<ul class="list-unstyled">
 									{% for category in categories %}
 									<li class="mb-1"><a href="javascript:;"><i class='bx bx-chevron-right'></i> {{ category }}</a>
@@ -277,7 +319,7 @@
 						</div>
 						<div class="col">
 							<div class="footer-section3">
-								<h5 class="mb-4 text-uppercase fw-bold">Popular Tags</h5>
+								<p class="mb-4 text-uppercase fw-bold text-dark">Popular Tags</p>
 								<div class="tags-box d-flex flex-wrap gap-2">
 									<a href="javascript:;" class="btn btn-ecomm btn-outline-success rounded">Casuals</a>
 									<a href="javascript:;" class="btn btn-ecomm btn-outline-success rounded">Formals</a>
@@ -453,15 +495,12 @@
                 }
             });
             Toast.fire({
-                icon: "{{ message.tags }}",  // You might need to map Django message tags to SweetAlert2 icons
+                icon: "{{ message.tags }}",
                 title: "{{ message }}"
             });
         {% endfor %}
     {% endif %}
 </script>
-
-
-	
 
 
 	{% block script %}

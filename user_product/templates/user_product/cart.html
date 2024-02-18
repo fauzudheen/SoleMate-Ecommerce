@@ -1,6 +1,24 @@
 {% extends 'UserHome/base.html' %}
 
 {% block title %}Cart{% endblock %}
+
+{% block style %}
+<style>
+	@media screen and (max-width: 500px) {
+		#continue-shopping-btn{
+			display: none;
+		}
+		#clear-cart-btn{
+			margin-right: 10px;
+		}
+		#update-cart-btn{
+			margin-right: 10px;
+		}
+	}
+</style>
+{% endblock %}
+
+
 {% block content %}
 		<!--start page wrapper -->
 		<div class="page-wrapper">
@@ -92,10 +110,10 @@
 										</div>
 											{% endfor %}
 										<hr>			
-										<div class="d-lg-flex align-items-center gap-2">
-											<a href="{% url 'shop'%}" class="btn btn-dark btn-ecomm rounded"><i class='bx bx-shopping-bag'></i> Continue Shoping</a>
-											<a href="{% url 'user_product:clear_cart'%}" class="btn btn-warning btn-ecomm ms-auto rounded"><i class='bx bx-x-circle'></i> Clear Cart</a>
-											<a href="{% url 'user_product:cart'%}" class="btn btn-primary rounded btn-ecomm"><i class='bx bx-refresh'></i> Update Cart</a>
+										<div class="d-flex align-items-center gap-2" id="bot-btns">
+											<a href="{% url 'shop'%}" class="btn btn-dark btn-ecomm rounded" id="continue-shopping-btn"><i class='bx bx-shopping-bag'></i> Continue Shoping</a>
+											<a href="{% url 'user_product:clear_cart'%}" class="btn btn-warning btn-ecomm ms-auto rounded" id="update-cart-btn"><i class='bx bx-x-circle'></i> Clear Cart</a>
+											<a href="{% url 'user_product:cart'%}" class="btn btn-primary rounded btn-ecomm" id="clear-cart-btn"><i class='bx bx-refresh'></i> Update Cart</a>
 										</div>
 									</div>
 								</div>
