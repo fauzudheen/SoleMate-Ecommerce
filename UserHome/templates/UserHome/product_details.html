@@ -25,6 +25,9 @@
 				height: auto;
 				max-width: 100%; 
 			}
+			#sm-img-col{
+				width: 100%;
+			}
 		
 		}
 
@@ -48,11 +51,11 @@
 		}
 		@media (max-width: 576px ) {
 			#sm-image{
-				width: 80px;
+				width: 20%;
 				margin-right: 10px;
 			}
 			#bg-image{
-				width: 320px;
+				width: 70%;
 			}
 			.thumbnail-images {
 				overflow-x: auto;
@@ -82,13 +85,16 @@
 		
 		@media (max-width: 440px ) {
 			#sm-image{
-				width: 80px;
+				width: 25%;
 			}
 			#bg-image{
 				width: 270px;
 			}
+			#sm-img-col{
+				width: 90%;
+			}
 		}
-		@media (max-width: 390px ) {
+		@media (max-width: 400px ) {
 			#sm-img-col{
 				width: 20px;
 			}
@@ -167,7 +173,7 @@
 									<div class="col-12 col-lg-1 col-md-3 col-sm-3" id="sm-image">
 										<!-- Thumbnails aligned vertically on the left -->
 										<div class="thumbnail-images">
-											<div class="row g-3" id="sm-img-col">
+											<div class="row g-3" style="width: 100%;" id="sm-img-col">
 												<div class="slick-carousel">
 													{% for image in product.images %}
 														<div class="col-12" >
