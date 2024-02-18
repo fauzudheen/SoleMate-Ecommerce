@@ -30,8 +30,7 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['3.25.67.70','0.0.0.0', 'localhost']
 
 # Application definition
 
@@ -55,9 +54,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -99,7 +98,7 @@ DATABASES = {
         'NAME': os.getenv('NAME'),
         'HOST' :os.getenv('HOST'),
         'PORT' : os.getenv('PORT'),
-        'USER' : os.getenv('USER'),
+        'USER' : os.getenv('USR'),
         'PASSWORD' : os.getenv('PASSWORD'),
     }
 }
@@ -176,3 +175,4 @@ SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 #For To Enable Popus in Django or else it will block the payment popup
 SECURE_CROSS_ORIGIN_OPENER_POLICY = "same-origin-allow-popups"
 
+CSRF_TRUSTED_ORIGINS = ['https://solemate.fauzudheen.online', 'https://54.252.170.1' ]

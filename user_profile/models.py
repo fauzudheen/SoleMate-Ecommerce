@@ -39,13 +39,7 @@ class Wallet(models.Model):
             type=type,
             amount=amount
         )
-    
-    
-
-@receiver(post_save, sender=UserProfile)
-def create_user_wallet(sender, instance, created, **kwargs):
-    if created:
-        Wallet.objects.create(user=instance)
+ 
 
 def get_current_date():
     return datetime.now().date()

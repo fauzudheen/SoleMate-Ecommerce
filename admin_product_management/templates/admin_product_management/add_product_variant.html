@@ -29,14 +29,13 @@
               <div class="card-body">
                 <h4 class="card-title">Product Variant Form</h4>
                 <p class="card-description"> Size is the only variant we have as of now. Select product, size and their corresponding quantity</p>
-                <form class="forms-sample" method="post" id="myForm" enctype="multipart/form-data">
+                <form class="forms-sample" method="post" id="myForm">
                   {% csrf_token %}
                   <div class="form-group" id="form-container">
                       <div class="default-fields">
                           <!-- Default size and quantity fields -->
                           <div class="inline-fields">
-                              <span>{{ form.size|as_crispy_field }}</span>
-                              <span>{{ form.quantity|as_crispy_field }}</span>
+                              {{form|crispy}}
                           </div>
                       </div>
                   </div>

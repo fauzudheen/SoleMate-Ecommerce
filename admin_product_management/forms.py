@@ -31,11 +31,7 @@ class ProductVariantForm(forms.ModelForm):
     class Meta:
         model = ProductVariant
         fields = '__all__'
-        widgets = {
-            'description': forms.Textarea(attrs={'rows': 4}),
-            'start_date': forms.DateInput(format='%d-%m-%Y', attrs={'type': 'date'}),
-            'end_date': forms.DateInput(format='%d-%m-%Y', attrs={'type': 'date'}),
-        }
+       
 
 
 class OfferForm(forms.ModelForm):
