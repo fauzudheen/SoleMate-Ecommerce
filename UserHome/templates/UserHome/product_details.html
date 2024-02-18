@@ -52,7 +52,7 @@
 		@media (max-width: 576px ) {
 			#sm-image{
 				width: 20%;
-				margin-right: 1%;
+				margin-right: 0px;
 			}
 			#bg-image{
 				width: 79%;
@@ -63,7 +63,7 @@
 			}
 		
 			.thumbnail-container {
-				margin-right: 10px;
+				margin-right: 1px;
 			}
 		
 			.main-image-container {
@@ -89,9 +89,6 @@
 			}
 			#bg-image{
 				width: 79%;
-			}
-			#sm-img-col{
-				width: 90%;
 			}
 		}
 		@media (max-width: 400px ) {
@@ -172,31 +169,26 @@
 								<div class="row g-0">
 									<div class="col-12 col-lg-1 col-md-3 col-sm-3" id="sm-image">
 										<!-- Thumbnails aligned vertically on the left -->
-										<div class="thumbnail-images">
-											<div class="row g-3" style="width: 100%;" id="sm-img-col">
+										<div class="thumbnail-images" style="width: 100%;">
+											<div class="row g-0" style="width: 100%;" id="sm-img-col"> <!-- Set g-0 to remove the gutter between columns -->
 												<div class="slick-carousel">
 													{% for image in product.images %}
-														<div class="col-12" >
-															<div class="sm-image thumbnail-container border mb-1 rounded p-2">
-																<img
-																	src="{{ image.images.url }}"
-																	class="img-fluid ml-5 border-thumbnail"
-																	style="width: 100%;"
-																	alt="Thumbnail Image"
-																	onclick="changeMainImage('{{ image.images.url }}')"
-																/>
+														<div class="col-12" style="width: 100%;">
+															<div class="sm-image thumbnail-container border mb-1 rounded p-2" style="width: 100%;">
+																<img src="{{ image.images.url }}" class="img-fluid ml-5 border-thumbnail" style="width: 100%;" alt="Thumbnail Image" onclick="changeMainImage('{{ image.images.url }}')"/>
 															</div>
 														</div>
 													{% endfor %}
 												</div>
 											</div>
 										</div>
+										
 									</div>
 									
 									<div class="col-12 col-lg-4 col-md-9 col-sm-9" id="bg-image">
 										<!-- Big main image on the right -->
 										<div class="product-images">
-											<div class="main-image-container border rounded pt-4 px-1 mx-1" style="height: 460px;">
+											<div class="main-image-container border rounded pt-4 px-1 mx-2" style="height: 460px;">
 												<img
 													id="mainImage"
 													class="img-fluid mx-auto"
