@@ -22,8 +22,9 @@ class AddToCartForm(forms.ModelForm):
         }
     def __init__(self, *args, **kwargs):
         product_id = kwargs.pop('product_id', None)
-        super(AddToCartForm, self).__init__(*args, **kwargs)
-
+        super().__init__(*args, **kwargs)
+        
         if product_id:
-            product_variants = ProductVariant.objects.filter(product_id=product_id)
-            self.fields['product_variant'].queryset = product_variants
+            self.fields['product_variant'].queryset = ProductVariant.objects.filter(
+                product_id=product_id
+            ).order_by('size')

@@ -108,6 +108,7 @@ def change_order_status(request, order_item_id):
             form.save()
             order_item = OrderItem.objects.get(id=order_item_id)
             order_item.qty_update_on_cancel()
+            order_item.refund_wallet() 
             order_item.add_to_sales_on_deliver()
             order_item.update_delivery_date()
             return redirect('admin_order:order_items')

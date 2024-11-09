@@ -68,7 +68,7 @@ Checkout Details
 																		<div class="card-body">
 																			<div class="d-flex d-flex justify-content-between">
 																				<h5 class="mb-4">Choose an address for Order</h5>
-																				<a href="{% url 'user_profile:add_address' %}">
+																				<a href="{% url 'user_profile:add_address' %}?next={{ request.path }}">
 																					<button class="btn bg-success fw-bold text-white rounded" style="font-size: 14px;">+ Add Address</button>
 																				</a>
 																			</div>

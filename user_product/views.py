@@ -17,6 +17,10 @@ def cart(request):
     try:
         cart = Cart.objects.get(user=request.user)
         cart_items = CartItem.objects.select_related('product').filter(cart=cart)
+
+        for cart_item in cart_items:
+            cart_item.save_dup() # This will recalculate the subtotal
+
         cart.total_amount = sum(item.sub_total for item in cart_items)
         cart.save()
 

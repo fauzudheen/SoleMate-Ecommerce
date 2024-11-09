@@ -242,92 +242,100 @@ Payment
 		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 		<script>
 			$(document).ready(function () {
-				// Declare Razorpay object outside click event
-				var rzp1;
-		
-				$('#rzp-button1').click(function (e) { 
-					e.preventDefault();
-					console.log('before ajax')
-					var token=$("[name='csrfmiddlewaretoken']").val();
-					$.ajax({
-					type: "GET",
-					url: "{% url 'user_order:razorpay_checkout' %}", 
-					headers: { "X-CSRFToken": "{{ csrf_token }}" },
-					success: function (response) {
-						console.log(response)
-						// Use response.amount instead of response.total_amount
-						var options = {
-							"key": response.RAZOR_KEY_ID,
-							"amount":parseInt(response.total_amount) ,
-							"currency": "INR",
-							"name": "SoleMate",
-							"description": "Test Transaction",
-							"image": "{% static 'Admin/assets/images/brand.jpg' %}",
-							"handler": function (responseb){
-							console.log(responseb)
-								data={
-								"razorpay_payment_id":responseb.razorpay_payment_id,
-								csrfmiddlewaretoken:token
-								}
-								
-								$.ajax({
-								type: "POST",
-								url: "{% url 'user_order:razorpay_payment' %}",
-								headers: { "X-CSRFToken": "{{ csrf_token }}" },
-								data: data,
-								
-								success: function(data) {
-									console.log(data)
+    var rzp1;
 
-									// Replace the entire body content with the loaded HTML
-									$('body').html(data);
-								},
-								});
-								
-							},
-							"prefill": {
-								"name": response.name,
-								"email": response.email,
-								"contact": response.phone_no,
-							},
-							"theme": {
-								"color": "#3399cc"
-							}
-						};
-						// Initialize Razorpay object
-						rzp1 = new Razorpay(options);
-						rzp1.on('payment.failed', function (response){
+    $('#rzp-button1').click(function (e) { 
+        e.preventDefault();
+        var token = $("[name='csrfmiddlewaretoken']").val();
+        
+        $.ajax({
+            type: "GET",
+            url: "{% url 'user_order:razorpay_checkout' %}", 
+            headers: { "X-CSRFToken": "{{ csrf_token }}" },
+            success: function (response) {
+                console.log('Razorpay checkout response:', response);
+                
+                var options = {
+                    "key": response.RAZOR_KEY_ID,
+                    "amount": parseInt(response.total_amount),
+                    "currency": "INR",
+                    "name": "SoleMate",
+                    "description": "Test Transaction",
+                    "image": "{% static 'Admin/assets/images/brand.jpg' %}",
+                    "order_id": response.order_id,  // Important: Include order_id here
+                    "handler": function (response) {
+                        console.log('Payment success response:', response);
+                        data = {
+                            "payment_method": "Razorpay",
+                            "razorpay_payment_id": response.razorpay_payment_id,
+                            "razorpay_order_id": response.razorpay_order_id,
+                            "razorpay_signature": response.razorpay_signature,
+                            csrfmiddlewaretoken: token
+                        }
+                        
+                        $.ajax({
+                            type: "POST",
+                            url: "{% url 'user_order:razorpay_payment' %}",
+                            headers: { "X-CSRFToken": token },
+                            data: data,
+                            success: function(responseData) {
+                                console.log('Payment verification response:', responseData);
+                                if (responseData.status === 'success') {
+                                    window.location.href = "{% url 'user_order:checkout_complete' %}";
+                                } else {
+                                    window.location.href = "{% url 'user_order:payment_failure' %}";
+                                }
+                            },
+                            error: function(xhr, status, error) {
+                                console.error('Payment verification error:', error);
+                                window.location.href = "{% url 'user_order:payment_failure' %}";
+                            }
+                        });
+                    },
+                    "prefill": {
+                        "name": response.name,
+                        "email": response.email,
+                        "contact": response.phone_no
+                    },
+                    "theme": {
+                        "color": "#3399cc"
+                    }
+                };
 
-							data={
-								csrfmiddlewaretoken:token
-								}
-								
-							$.ajax({
-								type: "POST",
-								url: "{% url 'user_order:payment_pending' %}",
-								headers: { "X-CSRFToken": "{{ csrf_token }}" },
-								data: data,
-								
-								success: function(data) {
-									console.log(data)
-									$('body').html(data);
-								},
-								});
+                rzp1 = new Razorpay(options);
+                
+                rzp1.on('payment.failed', function (response) {
+                    console.log('Payment failed:', response.error);
+                    data = {
+                        csrfmiddlewaretoken: token
+                    }
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "{% url 'user_order:payment_pending' %}",
+                        headers: { "X-CSRFToken": token },
+                        data: data,
+                        success: function(data) {
+                            $('body').html(data);
+                        }
+                    });
+                });
 
-						});
-						// Open Razorpay checkout
-						rzp1.open();
-					}
-					});
-				});
-		
-				// You may want to handle cases where the user closes the checkout without completing the payment
-				$(window).on('unload', function(){
-					if (rzp1) {
-					rzp1.close();
-					}
-				});
-		   });
+                rzp1.open();
+            },
+            error: function(xhr, status, error) {
+                console.error('Checkout error:', error);
+                window.location.href = "{% url 'user_order:payment_failure' %}";
+            }
+        });
+    });
+
+    $(window).on('unload', function(){
+        if (rzp1) {
+            rzp1.close();
+        }
+    });
+});
 		</script>
 
 		{% endblock %}

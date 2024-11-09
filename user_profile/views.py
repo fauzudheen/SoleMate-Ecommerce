@@ -60,6 +60,9 @@ def addresses(request):
 @never_cache
 @login_required(login_url='login')
 def add_address(request):
+
+    next_page = request.POST.get('next') or request.GET.get('next', 'user_profile:addresses')
+
     form = AddressForm()
     if request.method == 'POST':
         form = AddressForm(request.POST)
@@ -67,10 +70,17 @@ def add_address(request):
             address_instance = form.save(commit=False)
             address_instance.user = request.user
             address_instance.save()
+
+            # Redirect to the next page if it's a valid internal URL
+            if next_page.startswith('/'):
+                return redirect(next_page)
             return redirect('user_profile:addresses')
         else:
             messages.error(request, "Please try again.")
-    return render(request, 'user_profile/add_address.html', {'form' : form})
+    return render(request, 'user_profile/add_address.html', {
+        'form': form,
+        'next': next_page 
+    })
 
 def is_shipping(request, address_id):
     old_shipping_address = UserAddresses.objects.filter(is_shipping=True).first()

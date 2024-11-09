@@ -258,38 +258,62 @@ def shop(request):
 
 @never_cache
 def product_details(request, product_id):
-    product = Product.objects.get(id=product_id)
-    product.product_variants = ProductVariant.objects.filter(product=product)
-    product.available_sizes = product.product_variants.values_list('size', flat=True).distinct()
-    product.images = ProductImages.objects.filter(product=product)
+    try:
+        product = Product.objects.get(id=product_id)
+        product.product_variants = ProductVariant.objects.filter(product=product)
+        product.available_sizes = product.product_variants.values_list('size', flat=True).distinct()
+        product.images = ProductImages.objects.filter(product=product)
         
-    if request.user.is_authenticated:
-        product.is_added_to_wishlist = WishlistItem.objects.filter(user=request.user, product=product)
-        cart, created = Cart.objects.get_or_create(user=request.user)
-        cart_items = CartItem.objects.filter(cart=cart)
+        if request.user.is_authenticated:
+            product.is_added_to_wishlist = WishlistItem.objects.filter(
+                user=request.user, 
+                product=product
+            ).exists()
+            cart, created = Cart.objects.get_or_create(user=request.user)
+        else:
+            return redirect('login')
 
-    if request.method == 'POST':
-        form = AddToCartForm(request.POST, product_id=product_id)
+        if request.method == 'POST':
+            form = AddToCartForm(request.POST, product_id=product_id)
+            if form.is_valid():
+                quantity = form.cleaned_data['quantity']
+                selected_variant = form.cleaned_data['product_variant']
+                
+                # Check if item already exists in cart
+                existing_cart_item = CartItem.objects.filter(
+                    cart=cart,
+                    product=product,
+                    product_variant=selected_variant
+                ).first()
 
-        if form.is_valid():
-            selected_variant = form.cleaned_data['product_variant']
-            existing_cart_item = CartItem.objects.filter(product_variant=selected_variant).first()
-            if existing_cart_item:
-                existing_cart_item.quantity += form.cleaned_data['quantity']
-                existing_cart_item.save_dup()
-            else:
-                cart_item_instance = form.save(commit=False)
-                cart_item_instance.cart = cart
-                cart_item_instance.product = product
-                cart_item_instance.save_dup()
+                if existing_cart_item:
+                    # Update existing cart item
+                    existing_cart_item.quantity += quantity
+                    existing_cart_item.save()
+                    messages.success(request, "Cart updated successfully!")
+                else:
+                    # Create new cart item
+                    CartItem.objects.create(
+                        cart=cart,
+                        product=product,
+                        product_variant=selected_variant,
+                        quantity=quantity
+                    )
+                    messages.success(request, "Item added to cart!")
+                
                 return redirect('user_product:cart')
-    else:
-        form = AddToCartForm(product_id=product_id)
+        else:
+            form = AddToCartForm(product_id=product_id)
 
-    return render(request, 'UserHome/product_details.html', {
-        'product': product,
-        'form': form,
-    })
+        context = {
+            'product': product,
+            'form': form,
+        }
+        return render(request, 'UserHome/product_details.html', context)
+        
+    except Product.DoesNotExist:
+        messages.error(request, "Product not found!")
+        return redirect('shop')
 
 def about(request):
     brands = Brand.objects.filter(is_listed=True)

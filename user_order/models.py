@@ -3,7 +3,7 @@ from UserHome.models import UserProfile
 from user_product.models import Product, ProductVariant
 from AdminHome.models import DailySales
 from datetime import datetime
-
+from user_profile.models import Wallet
 
 
 class OrderAddress(models.Model):
@@ -57,6 +57,13 @@ class OrderItem(models.Model):
             product_variant = ProductVariant.objects.get(product=self.product, size=self.product_variant)
             product_variant.quantity += self.quantity
             product_variant.save()
+
+    def refund_wallet(self):
+        if self.payment_status == "Complete":
+            wallet = Wallet.objects.get(user=self.order.user)
+            wallet.balance += self.sub_total
+            wallet.save()
+            wallet.update_transaction(self.sub_total, type="Refund")
 
     def add_to_sales_on_deliver(self):
         if self.order_status.status == "Delivered":

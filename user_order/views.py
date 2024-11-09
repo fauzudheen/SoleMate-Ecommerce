@@ -108,37 +108,43 @@ def checkout_payment(request):
 
 
 def place_order(request, payment_method, payment_status):
-
     if request.method == 'POST':
         cart_id = request.session['cart_id']
+        print(f"Received Cart ID: {cart_id}")  
+        
         if not cart_id:
             messages.error(request, 'Cart is empty. Please add items to your cart before placing an order.')
             return redirect('user_product:cart')
         
         cart = Cart.objects.get(id=cart_id)
         cart_items = CartItem.objects.filter(cart=cart)
+        print(f"Cart Items: {cart_items}")  
+        
         for item in cart_items:
             product = item.product
             size = item.product_variant
             variant = ProductVariant.objects.get(product=product, size=size)
+            print(f"Checking stock for product {product.name}, size {size}: available {variant.quantity}, requested {item.quantity}")  # Debugging stock check
             if variant.quantity < item.quantity:
-                messages.error(request, f"The product { product.name } has only { variant.quantity } items for size { size }")
-                return redirect('user_product:cart') 
-            
+                messages.error(request, f"The product {product.name} has only {variant.quantity} items for size {size}")
+                return redirect('user_product:cart')
+
         if payment_method == 'Wallet':
             amount = cart.total_amount
+            print(f"Wallet payment selected. Total amount: {amount}")  
             wallet = Wallet.objects.get(user=request.user)
             if wallet.balance >= amount:
-                pass
+                print("Sufficient wallet balance.")  
             else:
-                messages.error(request, 'Your wallet blance is insufficient to make this transaction, kindly top up your wallet')
+                messages.error(request, 'Your wallet balance is insufficient to make this transaction, kindly top up your wallet')
                 return "Insufficient Wallet Balance"
 
-        cart = Cart.objects.get(id=cart_id)
-        cart_items = CartItem.objects.filter(cart=cart)
+        # Place the order
+        print(f"Placing order for user: {request.user}")  
         user = request.user
         selected_address_id = request.session['selected_address_id']
         shipping_address = UserAddresses.objects.get(id=selected_address_id)
+        print(f"Shipping Address: {shipping_address}")  
 
         order_address = OrderAddress.objects.create(
             full_name=shipping_address.full_name,
@@ -152,12 +158,30 @@ def place_order(request, payment_method, payment_status):
         order = Order.objects.create(
             user=user,
             address=order_address,
-            total_amount=cart.total_amount, 
+            total_amount=cart.total_amount,
             order_date=timezone.now(),
         )
+        print(f"Order created with ID: {order.id}")  
 
+        if payment_method == 'Razorpay':
+            razorpay_payment_id = request.session.get('razorpay_payment_id')
+            print(f"Razorpay Payment ID from session: {razorpay_payment_id}")
+            
+            if not razorpay_payment_id:
+                messages.error(request, 'Payment ID not found in session')
+                return "Payment ID Missing"
+                
+            payment = Payment.objects.create(
+                order=order,
+                amount=cart.total_amount,
+                payment_method='Razorpay',
+                razorpay_payment_id=razorpay_payment_id
+            )
+            print(f"Payment created with ID: {payment.id}")
+            request.session.pop('razorpay_payment_id', None)
+
+        # Create order items
         for cart_item in cart_items:
-
             tracking_number = random.randint(1111111, 9999999)
             while OrderItem.objects.filter(tracking_number=tracking_number).exists():
                 tracking_number = random.randint(1111111, 9999999)
@@ -167,42 +191,35 @@ def place_order(request, payment_method, payment_status):
                 product=cart_item.product,
                 product_variant=cart_item.product_variant.size,
                 quantity=cart_item.quantity,
-                sub_total=cart_item.sub_total, 
+                sub_total=cart_item.sub_total,
                 payment_method=payment_method,
                 payment_status=payment_status,
                 order_status=OrderStatus.objects.get(status='Confirmed'),
-                tracking_number = tracking_number,
+                tracking_number=tracking_number,
             )
+            print(f"Order item created with tracking number: {tracking_number}")
 
+          
             cart_item.product_variant.quantity -= cart_item.quantity
             cart_item.product_variant.save()
 
-            if payment_method == 'Razorpay':
-                payment = Payment.objects.create(
-                        order=order,
-                        amount=cart.total_amount, 
-                        payment_method='Razorpay',
-                        razorpay_payment_id=request.session['razorpay_payment_id']
-                    )
-                request.session.pop('razorpay_payment_id', None)
+        # Handle wallet payment after order items are created
+        if payment_method == 'Wallet':
+            amount = cart.total_amount
+            wallet = Wallet.objects.get(user=request.user)
+            wallet.balance -= amount
+            wallet.save()
+            wallet.update_transaction(amount, type="Payment")
 
-            if payment_method == 'Wallet':
-                amount = cart.total_amount
-                wallet = Wallet.objects.get(user=request.user)
-                wallet.balance -= amount
-                wallet.save()
-                wallet.update_transaction(amount, type="Payment")
-                
-            
+        # Handle coupon
         coupon_id = request.session.get('applied_coupon_id')
+        print(f"Applied Coupon ID: {coupon_id}")
         if coupon_id:
             coupon = Coupon.objects.filter(id=coupon_id).first()
-            user_coupon = UserCoupon.objects.create(user=user, coupon=coupon) 
-            user_coupon.redeem_coupon()              
-        else:   
-            pass
+            user_coupon = UserCoupon.objects.create(user=user, coupon=coupon)
+            user_coupon.redeem_coupon()
 
-
+        # Clear session data
         request.session.pop('cart_id', None)
         request.session.pop('selected_address_id', None)
         request.session.pop('applied_coupon_id', None)
@@ -227,17 +244,69 @@ def cod_payment(request):
 
 
 def razorpay_payment(request):
-    razorpay_payment_id = request.POST.get('razorpay_payment_id')
-    request.session['razorpay_payment_id'] = razorpay_payment_id  
+    if request.method != 'POST':
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Invalid request method'
+        }, status=400)
 
-    payment_method = 'Razorpay'
-    payment_status = "Complete"
+    try:
+        # Get payment details from POST data
+        payment_id = request.POST.get('razorpay_payment_id')
+        order_id = request.POST.get('razorpay_order_id')
+        signature = request.POST.get('razorpay_signature')
 
-    order_placed = place_order(request, payment_method, payment_status)
-    if order_placed == "Success":
-        return redirect('user_order:checkout_complete')
-    else:
-        return redirect('user_order:payment_failure')    
+        # Validate required parameters
+        if not all([payment_id, order_id, signature]):
+            raise ValueError("Missing required payment parameters")
+
+        # Initialize Razorpay client
+        client = razorpay.Client(auth=(os.getenv('RAZOR_KEY_ID'), os.getenv('RAZOR_KEY_SECRET')))
+
+        # Verify payment signature
+        params_dict = {
+            'razorpay_payment_id': payment_id,
+            'razorpay_order_id': order_id,
+            'razorpay_signature': signature
+        }
+        
+        client.utility.verify_payment_signature(params_dict)
+        print("Payment signature verified")
+
+        request.session['razorpay_payment_id'] = payment_id 
+
+        # If signature verification passes, process the order
+        payment_method = 'Razorpay'
+        payment_status = "Complete"
+        
+        order_result = place_order(request, payment_method, payment_status)
+        
+        if order_result == "Success":
+            # Clean up session data
+            for key in ['razorpay_order_id', 'razorpay_payment_id']:
+                request.session.pop(key, None)
+                
+            return JsonResponse({
+                'status': 'success',
+                'message': 'Payment processed successfully'
+            })
+        else:
+            raise ValueError("Order placement failed")
+
+    except razorpay.errors.SignatureVerificationError as e:
+        print(f"Signature verification failed: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Payment verification failed'
+        }, status=400)
+        
+    except Exception as e:
+        print(f"Payment processing error: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
+    
     
 def payment_pending(request):
 
@@ -286,29 +355,51 @@ def checkout_complete(request):
 
 
 def razorpay_checkout(request):
-
-    cart_id = request.session['cart_id']
-    cart = Cart.objects.get(id=cart_id)
-
-    user=request.user
-    name=user.first_name
-    email=user.email
-    phone_no=user.phone_number
-    total_amount=cart.total_amount*100
-
-    RAZOR_KEY_ID = os.getenv('RAZOR_KEY_ID')
-    RAZOR_KEY_SECRET = os.getenv('RAZOR_KEY_SECRET')
-
-    client = razorpay.Client(auth=(RAZOR_KEY_ID, RAZOR_KEY_SECRET))
+    try:
+        cart_id = request.session.get('cart_id')
+        if not cart_id:
+            raise ValueError("Cart ID not found in session")
+            
+        cart = Cart.objects.get(id=cart_id)
+        user = request.user
         
-    payment = client.order.create({'amount': total_amount, 'currency': 'INR', 'payment_capture': 1})
-
-    return JsonResponse({'total_amount':total_amount,
-                         'name':name,
-                         'email':email,
-                         'phone_no':phone_no,
-                         'RAZOR_KEY_ID':RAZOR_KEY_ID,
-                         })
+        total_amount = int(cart.total_amount * 100)
+        
+        RAZOR_KEY_ID = os.getenv('RAZOR_KEY_ID')
+        RAZOR_KEY_SECRET = os.getenv('RAZOR_KEY_SECRET')
+        client = razorpay.Client(auth=(RAZOR_KEY_ID, RAZOR_KEY_SECRET))
+        
+        order_data = {
+            'amount': total_amount,
+            'currency': 'INR',
+            'payment_capture': 1,
+            'notes': {
+                'cart_id': str(cart_id),
+                'user_id': str(user.id)
+            }
+        }
+        
+        payment = client.order.create(order_data)
+        
+        request.session['razorpay_order_id'] = payment['id']
+        request.session.modified = True
+        
+        return JsonResponse({
+            'status': 'success',
+            'total_amount': total_amount,
+            'name': user.first_name,
+            'email': user.email,
+            'phone_no': user.phone_number,
+            'RAZOR_KEY_ID': RAZOR_KEY_ID,
+            'order_id': payment['id']
+        })
+        
+    except Exception as e:
+        print(f"Error in razorpay_checkout: {str(e)}")
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)
 
 
 @login_required(login_url='login')

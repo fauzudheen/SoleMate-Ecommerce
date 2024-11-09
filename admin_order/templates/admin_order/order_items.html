@@ -69,7 +69,13 @@
                                     <td>{{ item.payment_method }}</td>
                                     <td>{{ item.payment_status }}</td>
                                     <td>
+                                      {% if item.order_status.id == 5 %}
+                                        <div class="bg-danger text-white btn-sm mx-1 ">Cancelled</div>
+                                      {% elif item.order_status.id == 4 %}
+                                        <div class="bg-success text-white btn-sm mx-1 ">Delivered</div>
+                                      {% else %}
                                         <a href="{% url 'admin_order:change_order_status' item.id %}" class="btn btn-gradient-light btn-sm mx-1">Change Status</a>
+                                      {% endif %}
                                     </td>
                                 </tr>
                                 {% endfor %}
